@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emote Editor</title>
+
+    <link rel="stylesheet" href="./main.css">
+    <script type="module" src="./client.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body loading>
+
+    <main>
+        <gyro-menubar>
+            <div>
+                <gyro-menuitem icon="Placeholder" title="Placeholder" action="file.open"></gyro-menuitem>
+                <gyro-menuitem icon="Placeholder" title="Placeholder" action="file.export">
+                    <gyro-menuoption title="Emotes">Emotes</gyro-menuoption>
+                    <gyro-menuoption title="Badges">Badges</gyro-menuoption>
+                </gyro-menuitem>
+            </div>
+        </gyro-menubar>
+
+        <gyro-layout style="grid-template-columns: 1fr 400px;">
+            <gyro-layout-column>
+                <gyro-group>
+                    <gyro-emote-editor tab="Editor" class="editor"></gyro-emote-editor>
+                </gyro-group>
+            </gyro-layout-column>
+            <gyro-layout-column>
+                <gyro-group>
+                    <div tab="Preview" class="preview-tab">
+                        <div>
+                            <h2>Emotes</h2>
+                            <div class="image-preview">
+                                <canvas class="emote-preview" width="112" height="112"></canvas>
+                                <canvas class="emote-preview" width="56" height="56"></canvas>
+                                <canvas class="emote-preview" width="28" height="28"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h2>Badges</h2>
+                            <div class="image-preview">
+                                <canvas class="emote-preview" width="72" height="72"></canvas>
+                                <canvas class="emote-preview" width="36" height="36"></canvas>
+                                <canvas class="emote-preview" width="18" height="18"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h2>Chat</h2>
+                            <div class="twitch-chat-preview">
+                                <div class="twitch-chat-line">
+                                    <span class="username">luckydye</span>
+                                    <span class="sepearator">: </span>
+                                    <span>
+                                        <canvas class="emote-preview" width="20" height="20"></canvas>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </gyro-group>
+            </gyro-layout-column>
+        </gyro-layout>
+    </main>
+</body>
+</html>

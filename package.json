@@ -1,0 +1,27 @@
+{
+  "name": "gyro-dev",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:w": "webpack -w",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@uncut/gyro": "file:../gyro",
+    "@uncut/gyro-layout": "file:../gyro-layout",
+    "@uncut/viewport": "file:../viewport",
+    "lit-html": "^1.1.2"
+  },
+  "devDependencies": {
+    "css-loader": "^3.4.2",
+    "file-loader": "^4.3.0",
+    "raw-loader": "^3.1.0",
+    "style-loader": "^1.1.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}
