@@ -9,6 +9,7 @@ import { SettingsComponent } from '@uncut/gyro/components/settings/Settings.js';
 import '@uncut/gyro/css/gyro.css';
 import { Action } from '@uncut/gyro/src/core/Actions';
 import '../components/emote-editor/EmoteEditor.js';
+import { html } from 'lit-html';
 
 window.addEventListener('DOMContentLoaded', init());
 
