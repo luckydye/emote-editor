@@ -1,0 +1,122 @@
+
+.chat-preview {
+    box-sizing: border-box;
+    background-color: hsl(240, 0%, 10%);
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-titlebar {
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-title {
+    text-transform: uppercase;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(222, 222, 227);
+}
+
+.emote-preview-container {
+    padding: 1rem 1rem;
+}
+
+.emote-preview-container .emote-preview {
+    margin-right: 10px;
+}
+
+.image-preview {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 6px;
+}
+
+.emote-preview {
+    margin-right: 3px;
+    border: 1px solid black;
+}
+
+.twitch-chat-preview {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    margin-top: 5px;
+    flex: 1;
+}
+
+.twitch-chat-line {
+    display: flex;
+    padding: .5rem 1rem;
+}
+
+.twitch-chat-line span {
+    display: flex;
+    height: 14px;
+    align-items: center;
+}
+
+.twitch-chat-line .message {
+    opacity: 0.5;
+}
+
+.twitch-chat-line .sepearator {
+    width: 8px;
+}
+
+.twitch-chat-line .username {
+    font-weight: 700;
+    font-size: 12px;
+    color: rgb(41, 179, 220);
+}
+
+.fake-chat-input {
+    padding-left: .7rem !important;
+    padding-right: .7rem !important;
+    padding-bottom: .7rem !important;
+    margin-top: 20px;
+}
+
+.chat-input {
+    width: 100%;
+    height: 42px;
+    margin: 2px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.chat-input-footer {
+    margin-top: .7rem !important;
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat-button {
+    min-width: 48px;
+    height: 30px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.channel-points {
+    color: rgb(173, 173, 184);
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.channel-points-badge {
+    margin-right: 5px;
+}
+
+.chat-submit-button {
+    background: rgb(145, 71, 255);
+}

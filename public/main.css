@@ -1,3 +1,5 @@
+@import './chat.css';
+
 body {
     overscroll-behavior-y: none;
     overscroll-behavior-x: none;
@@ -26,6 +28,13 @@ gyro-layout {
     box-sizing: border-box;
 }
 
+h2 {
+    font-size: 14px;
+    font-weight: normal;
+    color: #eee;
+    margin: 0 0 20px 0;
+}
+
 #openButton {
     display: none;
 }
@@ -38,58 +47,6 @@ notifications {
     bottom: 30px;
 }
 
-.preview-tab {
-    padding: 20px;
-    box-sizing: border-box;
-}
-
 .editor {
     background-color: #191919;
-}
-
-.image-preview {
-    margin: 0 0 40px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    padding: 20px;
-    background: #1B1B1B;
-    border-radius: 6px;
-}
-
-.emote-preview {
-    border: 1px solid black;
-}
-
-h2 {
-    font-size: 18px;
-    font-weight: normal;
-    color: #eee;
-    margin: 0 0 20px 0;
-}
-
-.twitch-chat-preview {
-    background: #1B1B1B;
-    border-radius: 6px;
-    padding: 20px;
-}
-
-.twitch-chat-line {
-    display: flex;
-}
-
-.twitch-chat-line span {
-    display: flex;
-    height: 14px;
-    align-items: center;
-}
-
-.twitch-chat-line .sepearator {
-    width: 8px;
-}
-
-.twitch-chat-line .username {
-    font-weight: 700;
-    font-size: 12px;
-    color: rgb(41, 179, 220);
 }
