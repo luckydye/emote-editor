@@ -44,9 +44,9 @@ function enableFileDragAndDrop() {
     
                         img.onload = () => {
                             const editor = document.querySelector('gyro-emote-editor');
-                            editor.viewAsset({ data: img });
+                            editor.loadImage(img);
     
-                            updatePreviews(editor.getPreviewOutput());
+                            updatePreviews(editor.renderOutput());
                         }
                     }
                     reader.readAsDataURL(file);
@@ -66,7 +66,7 @@ async function init() {
     });
 
     editor.addEventListener('change', e => {
-        updatePreviews(editor.getPreviewOutput());
+        updatePreviews(editor.renderOutput());
     })
 
     hideLoading();
