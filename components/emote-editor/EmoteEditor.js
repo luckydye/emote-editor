@@ -50,11 +50,11 @@ export class EmoteEditor extends HTMLElement {
 			<div class="toolbar">
                 <div class="toolbar-row">
                     <span>Scale:</span>
-                    <button class="tool-button" id="scale" title="Scale" @click=${e => this.setScale(1)}>
+                    <button class="tool-button holo" id="scale" title="Scale" @click=${e => this.setScale(1)}>
                         ${this.scale.toFixed(1)}
                     </button>
                     <span>Ascpet Ratio:</span>
-                    <dropdown-button class="tool-button" 
+                    <dropdown-button class="tool-button holo" 
                                     title="Aspect Ratio" 
                                     id="arButton"
                                     .options="${arOptions}" 
@@ -65,10 +65,10 @@ export class EmoteEditor extends HTMLElement {
                                     }}">
                     </dropdown-button>
                     <span>Rotation:</span>
-                    <gyro-fluid-input min="-180" max="180" value="0" @change="${function(e) {
+                    <gyro-fluid-input class="holo" min="-180" max="180" value="0" @change="${function(e) {
                         self.setRotation(this.value);
                     }}"></gyro-fluid-input>
-                    <button class="tool-button" title="Flip Canvas Horizontally" @click=${e => this.flipCanvas()}>Flip</button>
+                    <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => this.flipCanvas()}>Flip</button>
 				</div>
             </div>
 
