@@ -5,11 +5,10 @@ import '@uncut/gyro/components/Input.js';
 import '@uncut/gyro/components/Knob.js';
 import '@uncut/gyro/components/LevelSlider.js';
 import '@uncut/gyro/components/menu-bar/Menubar';
-import { SettingsComponent } from '@uncut/gyro/components/settings/Settings.js';
 import '@uncut/gyro/css/gyro.css';
-import { Action } from '@uncut/gyro/src/core/Actions';
 import '../components/emote-editor/EmoteEditor.js';
-import { html } from 'lit-html';
+import './actions.js';
+import { Action } from '@uncut/gyro/src/core/Actions';
 
 window.addEventListener('DOMContentLoaded', init());
 
@@ -36,20 +35,7 @@ function enableFileDragAndDrop() {
             for(let item of e.dataTransfer.items) {
                 if (item.kind === 'file') {
                     const file = item.getAsFile();
-    
-                    const reader  = new FileReader();
-                    reader.onload = function(e)  {
-                        const img = new Image();
-                        img.src = e.target.result;
-    
-                        img.onload = () => {
-                            const editor = document.querySelector('gyro-emote-editor');
-                            editor.loadImage(img);
-    
-                            updatePreviews(editor.renderOutput());
-                        }
-                    }
-                    reader.readAsDataURL(file);
+                    Action.execute('import.image', [file]);
                 }
             }
         }
@@ -60,6 +46,10 @@ async function init() {
     enableFileDragAndDrop();
 
     const editor = document.querySelector('gyro-emote-editor');
+
+    window.addEventListener('preview.update', e => {
+        updatePreviews(editor.renderOutput());
+    });
 
     editor.addEventListener('contextmenu', e => {
         e.preventDefault();
