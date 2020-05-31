@@ -21,6 +21,10 @@ main {
     grid-template-columns: auto 1fr;
 }
 
+gyro-menubar {
+    padding: 5px 0;
+}
+
 gyro-layout {
     width: 100%;
     height: 100%;

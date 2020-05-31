@@ -35,10 +35,23 @@ foreignObject {
     position: relative;
     z-index: -1;
     pointer-events: none;
+    transform: rotate(calc(var(--r, 0) * 1deg));
+}
+
+#canvasMask {
+    transform: rotate(calc(var(--r, 0) * -1deg));
+}
+
+.overlay {
+    opacity: 0.65;
+    pointer-events: none;
+    transform: rotate(calc(var(--r, 0) * 1deg));
 }
 
 canvas {
-    background: #fff;
+    background: url(./images/transparency.svg);
+    background-color: #282828;
+    background-size: calc(20px / var(--s));
 }
 
 .border {
@@ -64,11 +77,6 @@ canvas {
     cursor: nwse-resize;
 }
 
-.overlay {
-    opacity: 0.65;
-    pointer-events: none;
-}
-
 .placeholder {
     position: absolute;
     top: 0;
@@ -83,6 +91,7 @@ canvas {
     font-size: 24px;
     font-weight: 400;
     font-family: 'Roboto', sans-serif;
+    pointer-events: none;
     --icon-size: 200px;
 }
 

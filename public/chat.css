@@ -40,7 +40,7 @@
 }
 
 .emote-preview {
-    margin-right: 3px;
+    margin: 0 3px;
     /* border: 1px solid black; */
 }
 
@@ -52,12 +52,12 @@
 }
 
 .twitch-chat-line {
-    display: flex;
     padding: .5rem 1rem;
+    line-height: 20px;
 }
 
 .twitch-chat-line span {
-    display: flex;
+    display: inline-flex;
     height: 14px;
     align-items: center;
 }

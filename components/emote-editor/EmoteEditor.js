@@ -2,6 +2,8 @@ import componentStyles from '@uncut/gyro/components/component.shadow.css';
 import { html, render, svg } from 'lit-html';
 import style from './EmoteEditor.shadow.css';
 import '@uncut/gyro/components/settings/Settings.js';
+import '@uncut/gyro/components/DropdownButton.js';
+import '@uncut/gyro/components/FluidInput.js';
 
 export class EmoteEditor extends HTMLElement {
 
@@ -18,6 +20,26 @@ export class EmoteEditor extends HTMLElement {
 
         const hadnleSize = 5 / this.scale;
 
+        const self = this;
+
+        let arOptions = [
+            { name: "1 / 1", value: 1 },
+            { name: "1 / 2", value: .5 },
+            { name: "2 / 1", value: 2 },
+            { name: "free", value: 0 },
+            { name: "source", value: this.getSourceAspectRatio() },
+        ];
+        
+        const arButton = this.shadowRoot.querySelector('#arButton');
+
+        if(arButton) {
+            if(this.ascpetRatio == 0) {
+                arButton.value = { name: `free` };
+            } else if(this.ascpetRatio != 1 && this.ascpetRatio != .5) {
+                arButton.value = { name: `1 / ${this.ascpetRatio.toFixed(1)}` };
+            }
+        }
+
         return html`
             <style>
                 ${componentStyles}
@@ -25,11 +47,27 @@ export class EmoteEditor extends HTMLElement {
             </style>
 
 			<div class="toolbar">
-                <span>
+                <div class="toolbar-row">
+                    <span>Scale:</span>
                     <button class="tool-button" id="scale" title="Scale" @click=${e => this.setScale(1)}>
                         ${this.scale.toFixed(1)}
                     </button>
-				</span>
+                    <span>Ascpet Ratio:</span>
+                    <dropdown-button class="tool-button" 
+                                    title="Aspect Ratio" 
+                                    id="arButton"
+                                    .options="${arOptions}" 
+                                    @change="${function(e) {
+                                        if(self.width > 0) {
+                                            self.setAscpetRatio(+this.value.value);
+                                        }
+                                    }}">
+                    </dropdown-button>
+                    <span>Rotation:</span>
+                    <gyro-fluid-input min="-180" max="180" value="0" @change="${function(e) {
+                        self.setRotation(this.value);
+                    }}"></gyro-fluid-input>
+				</div>
             </div>
 
             <div class="placeholder">
@@ -58,7 +96,7 @@ export class EmoteEditor extends HTMLElement {
 
                         <mask id="cropMask">
                             <rect width="${width}" height="${height}" x="${x}" y="${y}" fill="white"></rect>
-                            <rect width="${cropW}" height="${cropH}" x="${x + cropX}" y="${y + cropY}" fill="black"></rect>
+                            <rect width="${cropW}" id="canvasMask" height="${cropH}" x="${x + cropX}" y="${y + cropY}" fill="black"></rect>
                         </mask>
 
                         <g id="crop">
@@ -112,6 +150,12 @@ export class EmoteEditor extends HTMLElement {
                         }
                     }
 
+                    if(e.ctrlKey) {
+                        this.fixedRatio = false;
+                    } else {
+                        this.fixedRatio = true;
+                    }
+
                     if(handle.id == "handleTL") {
                         this.setCrop(
                             startCrop[0] + delta[0],
@@ -162,6 +206,7 @@ export class EmoteEditor extends HTMLElement {
             }
             this.onmouseup = e => {
                 this.onmousemove = null;
+                this.fixedRatio = true;
             }
         }
     }
@@ -182,7 +227,9 @@ export class EmoteEditor extends HTMLElement {
             deltaScale = this.clientHeight / x;
         }
 
-        this.setScale(deltaScale - 0.05);
+        deltaScale = Math.min(deltaScale - 0.05, 1.0);
+
+        this.setScale(deltaScale);
 
         this.render();
 
@@ -192,26 +239,39 @@ export class EmoteEditor extends HTMLElement {
     setCrop(x, y, width, height) {
         const prevCrop = [...this.crop];
 
-        this.crop[0] = x || this.crop[0];
-        this.crop[1] = y || this.crop[1];
-        this.crop[2] = width || this.crop[2];
-        this.crop[3] = height || this.crop[3];
+        this.crop[0] = x != null ? x : prevCrop[0];
+        this.crop[1] = y != null ? y : prevCrop[1];
+        this.crop[2] = width != null ? width : prevCrop[2];
+        this.crop[3] = height != null ? height : prevCrop[3];
 
-        this.crop = this.crop.map(v => Math.floor(v));
+        this.crop[2] = Math.max(this.crop[2], this.minResolution[0]);
+        this.crop[3] = Math.max(this.crop[3], this.minResolution[1]);
 
-        if(this.fixedRatio) {
+        if(this.fixedRatio && this.ascpetRatio !== 0) {
             const croppedAr = this.crop[2] / this.crop[3];
+
             const preArHeight = this.crop[3];
+            const preArWidth = this.crop[2];
             
             this.crop[2] = this.crop[2];
             this.crop[3] = this.crop[3] * (croppedAr * this.ascpetRatio);
 
             if(this.crop[1] != prevCrop[1]) {
-                const diff = preArHeight - this.crop[3];
-                this.crop[1] += diff;
+                this.crop[1] += preArHeight - this.crop[3];
+            }
+            if(this.crop[0] != prevCrop[0]) {
+                this.crop[0] += preArWidth - this.crop[2];
             }
         }
 
+        this.crop = this.crop.map(v => Math.floor(v));
+
+        if(!this.fixedRatio) {
+            this.ascpetRatio = height / width;
+        }
+
+        this.render();
+        
         this.dispatchEvent(new Event('change'));
     }
 
@@ -219,6 +279,14 @@ export class EmoteEditor extends HTMLElement {
         this.scale = Math.max(scale, 0.1);
         this.style.setProperty('--s', this.scale);
         this.render();
+    }
+
+    setRotation(deg) {
+        this.rotation = deg;
+        this.style.setProperty('--r', this.rotation);
+        this.render();
+
+        this.dispatchEvent(new Event('change'));
     }
 
     setResolution(width, height) {
@@ -230,6 +298,11 @@ export class EmoteEditor extends HTMLElement {
         this.setCrop(0, 0, this.width, this.height);
     }
 
+    setAscpetRatio(ar) {
+        this.ascpetRatio = ar;
+        this.setCrop(0, 0, this.width, this.height);
+    }
+
     constructor() {
         super();
 
@@ -237,11 +310,13 @@ export class EmoteEditor extends HTMLElement {
 
         this.fixedRatio = true;
         this.ascpetRatio = 1.0;
+        this.minResolution = [18, 18];
         this.origin = { x: 0, y: 0 };
         this.crop = [0, 0, 0, 0];
         this.width = 0;
         this.height = 0;
         this.scale = 1;
+        this.rotation = 0;
 
         this.setAttribute('empty', '');
 
@@ -279,8 +354,16 @@ export class EmoteEditor extends HTMLElement {
 
     draw() {
         if(this.source) {
+            this.context.clearRect(0, 0, this.width, this.height);
             this.context.drawImage(this.source, 0, 0);
         }
+    }
+
+    getSourceAspectRatio() {
+        if(this.source) {
+            return this.source.height / this.source.width;
+        }
+        return 1;
     }
 
     getFileName() {
@@ -290,10 +373,19 @@ export class EmoteEditor extends HTMLElement {
     renderOutput() {
         const canvas = document.createElement('canvas');
         canvas.width = this.width;
-        canvas.height = this.width;
+        canvas.height = this.height;
         const context = canvas.getContext("2d");
-        const crop = this.crop;
-        context.drawImage(this.canvas, crop[0], crop[1], crop[2], crop[3], 0, 0, canvas.width, canvas.height);
+        context.save();
+
+        // recreate transforms
+        context.scale(this.width / this.crop[2], this.height / this.crop[3]);
+        context.translate(canvas.width / 2, canvas.height / 2);
+        context.translate(-this.crop[0], -this.crop[1]);
+        context.rotate(this.rotation * Math.PI / 180);
+
+        context.drawImage(this.canvas, -canvas.width / 2, -canvas.height / 2);
+
+        context.restore();
         return canvas;
     }
 }
