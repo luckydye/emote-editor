@@ -60,6 +60,7 @@
     display: inline-flex;
     height: 14px;
     align-items: center;
+    vertical-align: middle;
 }
 
 .twitch-chat-line .message {

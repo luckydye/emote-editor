@@ -89,3 +89,34 @@ Action.register({
         }
     }
 });
+
+// editor
+Action.register({
+    name: 'editor.reset.rotation',
+    description: 'Reset canvas rotation',
+    shortcut: 'Ctrl+R',
+    onAction() {
+        const editor = document.querySelector('gyro-emote-editor');
+        editor.setRotation(0);
+    }
+});
+
+Action.register({
+    name: 'editor.reset.scale',
+    description: 'Reset editor scale',
+    shortcut: 'Ctrl+1',
+    onAction() {
+        const editor = document.querySelector('gyro-emote-editor');
+        editor.setScale(1);
+    }
+});
+
+Action.register({
+    name: 'editor.canvas.flip',
+    description: 'Flip canvas',
+    shortcut: 'Ctrl+F',
+    onAction() {
+        const editor = document.querySelector('gyro-emote-editor');
+        editor.flipCanvas();
+    }
+});

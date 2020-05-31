@@ -4,6 +4,7 @@ import style from './EmoteEditor.shadow.css';
 import '@uncut/gyro/components/settings/Settings.js';
 import '@uncut/gyro/components/DropdownButton.js';
 import '@uncut/gyro/components/FluidInput.js';
+import { Action } from '@uncut/gyro/src/core/Actions';
 
 export class EmoteEditor extends HTMLElement {
 
@@ -67,6 +68,7 @@ export class EmoteEditor extends HTMLElement {
                     <gyro-fluid-input min="-180" max="180" value="0" @change="${function(e) {
                         self.setRotation(this.value);
                     }}"></gyro-fluid-input>
+                    <button class="tool-button" title="Flip Canvas Horizontally" @click=${e => this.flipCanvas()}>Flip</button>
 				</div>
             </div>
 
@@ -303,11 +305,20 @@ export class EmoteEditor extends HTMLElement {
         this.setCrop(0, 0, this.width, this.height);
     }
 
+    flipCanvas() {
+        this.flip = !this.flip;
+
+        this.draw();
+        
+        this.dispatchEvent(new Event('change'));
+    }
+
     constructor() {
         super();
 
         this.source = null;
 
+        this.flip = false;
         this.fixedRatio = true;
         this.ascpetRatio = 1.0;
         this.minResolution = [18, 18];
@@ -355,7 +366,17 @@ export class EmoteEditor extends HTMLElement {
     draw() {
         if(this.source) {
             this.context.clearRect(0, 0, this.width, this.height);
-            this.context.drawImage(this.source, 0, 0);
+
+            this.context.save();
+
+            if(this.flip) {
+                this.context.scale(-1, 1);
+                this.context.drawImage(this.source, -this.width, 0);
+            } else {
+                this.context.drawImage(this.source, 0, 0);
+            }
+
+            this.context.restore();
         }
     }
 
