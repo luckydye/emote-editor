@@ -98,3 +98,7 @@ canvas {
 .placeholder gyro-icon {
     margin-bottom: 40px;
 }
+
+.tool-button {
+    border-radius: 4px;
+}

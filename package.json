@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "predeploy": "webpack",
+    "deploy": "firebase deploy",
     "build:w": "webpack -w",
     "build": "webpack"
   },
