@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "predeploy": "webpack",
-    "deploy": "npm version patch && firebase deploy",
+    "deploy": "npm version patch -m \"Deployment version %s.\" && git push && firebase deploy",
     "build:w": "webpack -w",
     "build": "webpack"
   },
