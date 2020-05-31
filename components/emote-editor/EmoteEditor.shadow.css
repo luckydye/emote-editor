@@ -1,11 +1,14 @@
 :host {
     --source-background: url('../res/images/transparent.svg');
+    --ui-scale: calc(.5 / var(--s));
 }
 
-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
+:host([empty]) .preview {
+    display: none;
+}
+
+:host(:not([empty])) .placeholder {
+    display: none;
 }
 
 .preview {
@@ -15,4 +18,74 @@ canvas {
     width: 100%;
     height: 100%;
     will-change: transform;
+}
+
+#origin {
+    transform: translate(50%, 50%) scale(var(--s, 1));
+}
+
+#view {
+    transform: translate(var(--x), var(--y));
+}
+
+.canvas-wrapper {
+}
+
+foreignObject {
+    position: relative;
+    z-index: -1;
+    pointer-events: none;
+}
+
+canvas {
+    background: #fff;
+}
+
+.border {
+    stroke: white;
+    stroke-width: var(--ui-scale);
+    fill: transparent;
+}
+
+.handle {
+    fill: white;
+}
+
+.handle#handleTL {
+    cursor: nwse-resize;
+}
+.handle#handleTR {
+    cursor: nesw-resize;
+}
+.handle#handleBL {
+    cursor: nesw-resize;
+}
+.handle#handleBR {
+    cursor: nwse-resize;
+}
+
+.overlay {
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0.2;
+    font-size: 24px;
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+    --icon-size: 200px;
+}
+
+.placeholder gyro-icon {
+    margin-bottom: 40px;
 }

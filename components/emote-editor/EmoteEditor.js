@@ -22,59 +22,6 @@ export class EmoteEditor extends HTMLElement {
             <style>
                 ${componentStyles}
                 ${style}
-
-                :host {
-                    --ui-scale: calc(.5 / var(--s));
-                }
-
-                #origin {
-                    transform: translate(50%, 50%) scale(var(--s, 1));
-                }
-
-                #view {
-                    transform: translate(var(--x), var(--y));
-                }
-
-                .canvas-wrapper {
-                }
-
-                foreignObject {
-                    position: relative;
-                    z-index: -1;
-                    pointer-events: none;
-                }
-
-                canvas {
-                    background: #fff;
-                }
-
-                .stroke {
-                    stroke: white;
-                    stroke-width: var(--ui-scale);
-                    fill: transparent;
-                }
-
-                .handle {
-                    fill: white;
-                }
-
-                .handle#handleTL {
-                    cursor: nwse-resize;
-                }
-                .handle#handleTR {
-                    cursor: nesw-resize;
-                }
-                .handle#handleBL {
-                    cursor: nesw-resize;
-                }
-                .handle#handleBR {
-                    cursor: nwse-resize;
-                }
-
-                .overlay {
-                    opacity: 0.65;
-                    pointer-events: none;
-                }
             </style>
 
 			<div class="toolbar">
@@ -83,6 +30,13 @@ export class EmoteEditor extends HTMLElement {
                         ${this.scale.toFixed(1)}
                     </button>
 				</span>
+            </div>
+
+            <div class="placeholder">
+                <gyro-icon icon="Import"></gyro-icon>
+                <span>
+                    Darg and drop image to import.
+                </span>
             </div>
             
             <svg class="preview" 
@@ -108,7 +62,7 @@ export class EmoteEditor extends HTMLElement {
                         </mask>
 
                         <g id="crop">
-                            <rect class="stroke" id="cropArea" width="${cropW}" height="${cropH}" x="${x + cropX}" y="${y + cropY}"></rect>
+                            <rect class="border" id="cropArea" width="${cropW}" height="${cropH}" x="${x + cropX}" y="${y + cropY}"></rect>
 
                             <rect class="overlay" width="${width}" height="${height}" x="${x}" y="${y}" mask="url(#cropMask)"></rect>
                             
@@ -231,6 +185,8 @@ export class EmoteEditor extends HTMLElement {
         this.setScale(deltaScale - 0.05);
 
         this.render();
+
+        this.removeAttribute('empty', '');
     }
 
     setCrop(x, y, width, height) {
@@ -287,6 +243,8 @@ export class EmoteEditor extends HTMLElement {
         this.height = 0;
         this.scale = 1;
 
+        this.setAttribute('empty', '');
+
         this.attachShadow({ mode: "open" });
         this.render();
 
@@ -317,9 +275,6 @@ export class EmoteEditor extends HTMLElement {
                 this.style.setProperty('--y', this.origin.y + 'px');
             }
         };
-
-        this.setResolution(400, 400);
-        this.setScale(1);
     }
 
     draw() {
