@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "predeploy": "webpack && git add . && git commit -m 'build' && git push",
+    "predeploy": "webpack",
     "deploy": "npm version patch -m \"Deployment version %s\" && git push && firebase deploy",
     "build:w": "webpack -w",
     "build": "webpack"
