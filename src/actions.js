@@ -1,4 +1,5 @@
 import { Action } from '@uncut/gyro/src/core/Actions';
+import { html, render } from 'lit-html';
 
 function resizeImage(imageObject, size) {
     const canvas = document.createElement('canvas');
@@ -112,11 +113,51 @@ Action.register({
 });
 
 Action.register({
+    name: 'editor.reset.crop',
+    description: 'Reset canvas crop',
+    shortcut: 'Ctrl+0',
+    onAction() {
+        const editor = document.querySelector('gyro-emote-editor');
+        editor.setCrop(0, 0, editor.width, editor.height);
+    }
+});
+
+Action.register({
     name: 'editor.canvas.flip',
     description: 'Flip canvas',
     shortcut: 'Ctrl+F',
     onAction() {
         const editor = document.querySelector('gyro-emote-editor');
         editor.flipCanvas();
+    }
+});
+
+Action.register({
+    name: 'showcase.open',
+    description: 'Open Emote Showcase',
+    onAction() {
+        const editor = document.querySelector('gyro-emote-editor');
+        const imageOutput = editor.renderOutput();
+
+        const image28 = resizeImage(imageOutput, 28);
+        const image56 = resizeImage(imageOutput, 56);
+        const image112 = resizeImage(imageOutput, 112);
+
+        const template = html`
+            <div class="showcase-container">
+                <div class="showcase">
+                    <div class="emote-name">
+                        ${editor.getFileName()}
+                    </div>
+                    <div class="emotes">
+                        ${image28}
+                        ${image56}
+                        ${image112}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        render(template, document.querySelector('#emoteShowcase'));
     }
 });

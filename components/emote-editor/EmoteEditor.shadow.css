@@ -11,6 +11,15 @@
     display: none;
 }
 
+gyro-input {
+    height: 32px;
+    min-width: 200px;
+}
+
+.toolbar {
+    justify-content: space-between;
+}
+
 .preview {
     position: absolute;
     top: 0;

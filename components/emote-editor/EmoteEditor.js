@@ -4,6 +4,7 @@ import style from './EmoteEditor.shadow.css';
 import '@uncut/gyro/components/settings/Settings.js';
 import '@uncut/gyro/components/DropdownButton.js';
 import '@uncut/gyro/components/FluidInput.js';
+import '@uncut/gyro/components/Input.js';
 import { Action } from '@uncut/gyro/src/core/Actions';
 
 export class EmoteEditor extends HTMLElement {
@@ -69,6 +70,11 @@ export class EmoteEditor extends HTMLElement {
                         self.setRotation(this.value);
                     }}"></gyro-fluid-input>
                     <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => this.flipCanvas()}>Flip</button>
+				</div>
+                <div class="toolbar-row">
+                    <gyro-input placeholder="Untitled Emote" value="${this.getFileName() || ''}" @input="${function(e) {
+                        self.name = this.value;
+                    }}"></gyro-input>
 				</div>
             </div>
 
@@ -338,7 +344,7 @@ export class EmoteEditor extends HTMLElement {
         this.context = this.canvas.getContext("2d");
 
         this.addEventListener('wheel', e => {
-            this.setScale(this.scale + (Math.sign(-e.deltaY) * 0.05));
+            this.setScale(this.scale + (Math.sign(-e.deltaY) * 0.075));
         })
 
         this.addEventListener('mousedown', e => {
