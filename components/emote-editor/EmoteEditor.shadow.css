@@ -20,6 +20,10 @@ gyro-input {
     justify-content: space-between;
 }
 
+.tool-button {
+    white-space: nowrap;
+}
+
 .preview {
     position: absolute;
     top: 0;

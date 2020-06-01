@@ -4,6 +4,7 @@ import '@uncut/gyro/components/Icon.js';
 import '@uncut/gyro/components/Input.js';
 import '@uncut/gyro/components/Knob.js';
 import '@uncut/gyro/components/LevelSlider.js';
+import '@uncut/gyro/components/Slider.js';
 import '@uncut/gyro/components/menu-bar/Menubar';
 import '@uncut/gyro/css/gyro.css';
 import '../components/emote-editor/EmoteEditor.js';

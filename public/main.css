@@ -86,3 +86,12 @@ notifications {
     align-items: center;
     flex-direction: column;
 }
+
+.color-panel {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.color-panel gyro-slider {
+    width: 100%;
+}
