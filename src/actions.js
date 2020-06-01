@@ -60,6 +60,15 @@ function readFile(file) {
 
 // export
 Action.register({
+    name: 'export.maxres',
+    description: 'Export image with full resolution',
+    onAction() {
+        const editor = document.querySelector('gyro-emote-editor');
+        exportImages([editor.width]);
+    }
+});
+
+Action.register({
     name: 'export.emotes',
     description: 'Export emote images',
     shortcut: 'Ctrl+E',
