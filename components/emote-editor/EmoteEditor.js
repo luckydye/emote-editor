@@ -2,10 +2,10 @@ import componentStyles from '@uncut/gyro/components/component.shadow.css';
 import '@uncut/gyro/components/DropdownButton.js';
 import '@uncut/gyro/components/FluidInput.js';
 import '@uncut/gyro/components/Input.js';
+import Notification from '@uncut/gyro/components/Notification';
 import '@uncut/gyro/components/settings/Settings.js';
 import { html, render } from 'lit-html';
 import style from './EmoteEditor.shadow.css';
-import { dialog } from '@uncut/gyro/components/Dialog.js';
 
 let stateObject = {
     source: null,
@@ -479,13 +479,20 @@ export class EmoteEditor extends HTMLElement {
         const state = loadStateFromLocal();
 
         if(state && state.source) {
-            dialog('Load previous state?').then((comfirm) => {
-                if(comfirm) {
+            new Notification({ 
+                text: `
+                    <div style="display: flex; align-items: center;">
+                        <gyro-icon icon="Save" style="display: inline-block; margin-right: 10px;"></gyro-icon>
+                        Click here to load last save.
+                    </div>
+                `, 
+                time: 1000 * 5,
+                onclick: () => {
                     this.loadImage(state.source);
                     stateObject = state;
                     this.render();
                 }
-            })
+            }).show();
         }
         
         this.addEventListener('mousedown', () => {
