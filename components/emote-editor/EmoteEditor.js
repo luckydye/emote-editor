@@ -1,13 +1,13 @@
 import componentStyles from '@uncut/gyro/components/component.shadow.css';
-import { html, render, svg } from 'lit-html';
-import style from './EmoteEditor.shadow.css';
-import '@uncut/gyro/components/settings/Settings.js';
 import '@uncut/gyro/components/DropdownButton.js';
 import '@uncut/gyro/components/FluidInput.js';
 import '@uncut/gyro/components/Input.js';
-import { Action } from '@uncut/gyro/src/core/Actions';
+import '@uncut/gyro/components/settings/Settings.js';
+import { html, render } from 'lit-html';
+import style from './EmoteEditor.shadow.css';
+import { dialog } from '@uncut/gyro/components/Dialog.js';
 
-const stateObject = {
+let stateObject = {
     source: null,
     flip: false,
     fixedRatio: true,
@@ -21,9 +21,92 @@ const stateObject = {
     rotation: 0,
 }
 
-console.log(stateObject);
+const history = [];
+let future = [];
+
+function serializeState(state) {
+    const jsonState = JSON.stringify(state);
+    const json = JSON.parse(jsonState);
+
+    if(state.source) {
+        const source = state.source;
+        const sourceURL = source.src;
+        json.source = sourceURL;
+    }
+
+    return JSON.stringify(json);
+}
+
+function pushState(state, arr, keep = false) {
+
+    if(arr === history && !keep) {
+        future = [];
+    }
+
+    const serialzedState = serializeState(state);
+    arr.unshift(serialzedState);
+
+    if(arr.length > 50) {
+        arr.pop();
+    }
+
+    saveStateToLocal();
+}
+
+function revertState(newState) {
+    stateObject = JSON.parse(newState);
+
+    const img = new Image();
+    img.src = stateObject.source;
+    stateObject.source = img;
+
+    saveStateToLocal();
+}
+
+function saveStateToLocal() {
+    const serialzedState = serializeState(stateObject);
+    localStorage.setItem('save-state', serialzedState);
+}
+
+function loadStateFromLocal() {
+    let saveState = localStorage.getItem('save-state');
+
+    if(saveState) {
+        saveState = JSON.parse(saveState);
+
+        const img = new Image();
+        img.src = saveState.source;
+        saveState.source = img;
+    
+        return saveState;
+    }
+}
 
 export class EmoteEditor extends HTMLElement {
+
+    redo() {
+        const newState = future[0];
+
+        if(newState) {
+            future.shift();
+
+            pushState(stateObject, history, true);
+            revertState(newState);
+            this.render();
+        }
+    }
+
+    undo() {
+        const oldState = history[0];
+
+        if(oldState) {
+            history.shift();
+            
+            pushState(stateObject, future);
+            revertState(oldState);
+            this.render();
+        }
+    }
 
     get width() {
         return stateObject.width;
@@ -92,7 +175,7 @@ export class EmoteEditor extends HTMLElement {
                     <gyro-fluid-input class="holo" min="-180" max="180" value="0" @change="${function(e) {
                         self.setRotation(this.value);
                     }}"></gyro-fluid-input>
-                    <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => stateObject.flipCanvas()}>Flip</button>
+                    <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => self.flipCanvas()}>Flip</button>
 				</div>
                 <div class="toolbar-row">
                     <gyro-input placeholder="Untitled Emote" value="${this.getFileName() || ''}" @input="${function(e) {
@@ -149,6 +232,11 @@ export class EmoteEditor extends HTMLElement {
     render() {
         render(this.renderTemplate(), this.shadowRoot);
         this.draw();
+
+        this.style.setProperty('--s', stateObject.scale);
+        this.style.setProperty('--r', stateObject.rotation);
+        this.style.setProperty('--x', stateObject.origin.x + 'px');
+        this.style.setProperty('--y', stateObject.origin.y + 'px');
 
         this.handles = [
             this.shadowRoot.querySelector('#handleTL'),
@@ -252,10 +340,10 @@ export class EmoteEditor extends HTMLElement {
         let deltaScale = 1;
 
         if(x == image.width) {
-            deltaScale = this.clientWidth / x;
+            deltaScale = window.innerWidth / x;
         }
         if(x == image.height) {
-            deltaScale = this.clientHeight / x;
+            deltaScale = window.innerHeight / x;
         }
 
         deltaScale = Math.min(deltaScale - 0.05, 1.0);
@@ -308,13 +396,11 @@ export class EmoteEditor extends HTMLElement {
 
     setScale(scale) {
         stateObject.scale = Math.max(scale, 0.1);
-        this.style.setProperty('--s', stateObject.scale);
         this.render();
     }
 
     setRotation(deg) {
         stateObject.rotation = deg;
-        this.style.setProperty('--r', stateObject.rotation);
         this.render();
 
         this.dispatchEvent(new Event('change'));
@@ -386,10 +472,27 @@ export class EmoteEditor extends HTMLElement {
                 stateObject.origin.x += e.movementX / stateObject.scale;
                 stateObject.origin.y += e.movementY / stateObject.scale;
 
-                this.style.setProperty('--x', stateObject.origin.x + 'px');
-                this.style.setProperty('--y', stateObject.origin.y + 'px');
+                this.render();
             }
         };
+        
+        const state = loadStateFromLocal();
+
+        if(state && state.source) {
+            dialog('Load previous state?').then((comfirm) => {
+                if(comfirm) {
+                    this.loadImage(state.source);
+                    stateObject = state;
+                    this.render();
+                }
+            })
+        }
+        
+        this.addEventListener('mousedown', () => {
+            if(stateObject.source) {
+                pushState(stateObject, history);
+            }
+        });
     }
 
     draw() {

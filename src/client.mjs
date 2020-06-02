@@ -12,10 +12,15 @@ import '../components/chat/TwitchChat.js';
 import './actions.js';
 import { Action } from '@uncut/gyro/src/core/Actions';
 
-window.addEventListener('DOMContentLoaded', init());
+window.addEventListener('load', () => {
+    init().catch(err => {
+        document.body.setAttribute('error', 'Error: ' + err.message + ' | Please reload and try again.');
+        console.error(err);
+    })
+});
 
-function enableFileDragAndDrop() {
-    
+async function init() {
+    // drag and drop
     window.addEventListener('dragover', e => {
         e.preventDefault();
     });
@@ -30,13 +35,11 @@ function enableFileDragAndDrop() {
             }
         }
     })
-}
-
-async function init() {
-    enableFileDragAndDrop();
 
     const editor = document.querySelector('gyro-emote-editor');
     const chat = document.querySelector('twitch-chat');
+
+    chat.updateEmotes(editor.renderOutput());
 
     window.addEventListener('preview.update', e => {
         chat.updateEmotes(editor.renderOutput());

@@ -1,6 +1,9 @@
 import chatStyles from './chat.shadow.css';
 import { html, render } from 'lit-html';
 
+const placeholderEmote = new Image();
+placeholderEmote.src = "https://static-cdn.jtvnw.net/emoticons/v1/1/5.0";
+
 export class TwitchChat extends HTMLElement {
 
     renderTemplate() {
@@ -74,7 +77,7 @@ export class TwitchChat extends HTMLElement {
                     </div>
                 </div>
                 <div class="channel-rewards">
-                    <div class="title">Twitch's Rewards</div>
+                    <div class="title">Channel Rewards</div>
                     <div class="rewards">
                         <div class="reward">
                             <div class="reward-inner">
@@ -114,14 +117,34 @@ export class TwitchChat extends HTMLElement {
     }
 
     updateEmotes(croppedImage) {
-        if(!croppedImage) return;
-    
         const canvases = this.shadowRoot.querySelectorAll('canvas[pewview]');
     
         for(let canvas of canvases) {
+            let ar = canvas.width / canvas.height;
+            const center = [ canvas.width / 2, canvas.height / 2 ];
+
             const context = canvas.getContext("2d");
             context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(croppedImage, 0, 0, canvas.width, canvas.height);
+            
+            if(croppedImage && croppedImage.width > 0) {
+
+                const w = canvas.width;
+                const h = canvas.width / ar;
+                const x = center[0] - (w / 2);
+                const y = center[1] - (h / 2);
+
+                context.drawImage(croppedImage, 0, 0, canvas.width, canvas.height);
+
+            } else {
+                ar = placeholderEmote.width / placeholderEmote.height;
+
+                const w = canvas.width;
+                const h = canvas.width / ar;
+                const x = center[0] - (w / 2);
+                const y = center[1] - (h / 2);
+
+                context.drawImage(placeholderEmote, x, y, w, h);
+            }
         }
     }
 }

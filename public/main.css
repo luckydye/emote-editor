@@ -3,8 +3,41 @@ body {
     overscroll-behavior-x: none;
 }
 
-body[loading] {
+body[loading] main {
     opacity: 0;
+}
+
+@keyframes loading {
+    from { transform: translate(-50%, -50%) rotate(0deg) }
+    to { transform: translate(-50%, -50%) rotate(360deg) }
+}
+
+body::before {
+    content: "";
+    z-index: -1;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border: 2px solid white;
+    border-radius: 50%;
+    border-bottom: 2px solid transparent;
+    animation: loading 1s linear infinite;
+}
+
+body[error]::after {
+    content: attr(error);
+    position: fixed;
+    top: calc(50% + 100px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    opacity: 0.5;
+    padding: 6px 12px;
+    color: #fff;
+    background: #000;
+    border-radius: 4px;
 }
 
 main {
@@ -17,6 +50,7 @@ main {
     box-sizing: border-box;
     display: grid;
     grid-template-columns: auto 1fr;
+    transition: opacity .125s ease-out;
 }
 
 gyro-menubar {
@@ -30,13 +64,6 @@ gyro-layout {
     box-sizing: border-box;
 }
 
-h2 {
-    font-size: 14px;
-    font-weight: normal;
-    color: #eee;
-    margin: 0 0 20px 0;
-}
-
 #openButton {
     display: none;
 }
@@ -44,9 +71,16 @@ h2 {
 notifications {
     position: fixed;
     z-index: 1000;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 30px;
+    left: 60px;
+    bottom: 10px;
+}
+
+@keyframes slide-in-up {
+    from { transform: translateY(100%); opacity: 0; }
+}
+
+notifications notification {
+    animation: slide-in-up .15s ease;
 }
 
 .editor {

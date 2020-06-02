@@ -1,5 +1,6 @@
 import { Action } from '@uncut/gyro/src/core/Actions';
 import { html, render } from 'lit-html';
+import Notification from '@uncut/gyro/components/Notification.js';
 
 function resizeImage(imageObject, size) {
     const canvas = document.createElement('canvas');
@@ -100,6 +101,28 @@ Action.register({
     }
 });
 
+Action.register({
+    name: 'paste.image',
+    description: 'Paste image',
+    shortcut: 'Ctrl+V',
+    onKeyDown: true,
+    async onAction() {
+        const items = await navigator.clipboard.read();
+
+        const firstItem = items[0];
+        const blob = await firstItem.getType("image/png").catch(err => {
+            new Notification({ text: 'Nothing to paste' }).show()
+        });
+
+        if(blob) {
+            blob.lastModifiedDate = new Date();
+            blob.name = "Untitled";
+    
+            Action.execute('import.image', [blob]);
+        }
+    }
+});
+
 // editor
 Action.register({
     name: 'editor.reset.rotation',
@@ -135,7 +158,7 @@ Action.register({
     name: 'editor.canvas.flip',
     description: 'Flip canvas',
     shortcut: 'Ctrl+F',
-    onAction() {
+    onAction(action) {
         const editor = document.querySelector('gyro-emote-editor');
         editor.flipCanvas();
     }
@@ -168,5 +191,25 @@ Action.register({
         `;
 
         render(template, document.querySelector('#emoteShowcase'));
+    }
+});
+
+Action.register({
+    name: 'undo',
+    description: 'Undo',
+    shortcut: 'Ctrl+Z',
+    onAction: () => {
+        const editor = document.querySelector('gyro-emote-editor');
+        editor.undo()
+    }
+});
+
+Action.register({
+    name: 'redo',
+    description: 'Redo',
+    shortcut: 'Ctrl+Y',
+    onAction: () => {
+        const editor = document.querySelector('gyro-emote-editor');
+        editor.redo()
     }
 });

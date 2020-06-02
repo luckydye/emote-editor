@@ -16,6 +16,12 @@
     --twitch-chat-title-border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+h2 {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0 0 20px 0;
+}
+
 .chat-preview {
     height: 100%;
     box-sizing: border-box;
