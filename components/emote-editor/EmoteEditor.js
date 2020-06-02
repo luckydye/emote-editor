@@ -7,20 +7,43 @@ import '@uncut/gyro/components/FluidInput.js';
 import '@uncut/gyro/components/Input.js';
 import { Action } from '@uncut/gyro/src/core/Actions';
 
+const stateObject = {
+    source: null,
+    flip: false,
+    fixedRatio: true,
+    ascpetRatio: 1.0,
+    minResolution: [18, 18],
+    origin: { x: 0, y: 0 },
+    crop: [0, 0, 0, 0],
+    width: 0,
+    height: 0,
+    scale: 1,
+    rotation: 0,
+}
+
+console.log(stateObject);
+
 export class EmoteEditor extends HTMLElement {
 
+    get width() {
+        return stateObject.width;
+    }
+    get height() {
+        return stateObject.height;
+    }
+
     renderTemplate() {
-        const width = this.width;
-        const height = this.height;
-        const x = -this.width*0.5;
-        const y = -this.height*0.5;
+        const width = stateObject.width;
+        const height = stateObject.height;
+        const x = -stateObject.width*0.5;
+        const y = -stateObject.height*0.5;
 
-        const cropX = this.crop[0];
-        const cropY = this.crop[1];
-        const cropW = this.crop[2];
-        const cropH = this.crop[3];
+        const cropX = stateObject.crop[0];
+        const cropY = stateObject.crop[1];
+        const cropW = stateObject.crop[2];
+        const cropH = stateObject.crop[3];
 
-        const hadnleSize = 5 / this.scale;
+        const hadnleSize = 5 / stateObject.scale;
 
         const self = this;
 
@@ -35,10 +58,10 @@ export class EmoteEditor extends HTMLElement {
         const arButton = this.shadowRoot.querySelector('#arButton');
 
         if(arButton) {
-            if(this.ascpetRatio == 0) {
+            if(stateObject.ascpetRatio == 0) {
                 arButton.value = { name: `free` };
-            } else if(this.ascpetRatio != 1 && this.ascpetRatio != .5) {
-                arButton.value = { name: `1 / ${this.ascpetRatio.toFixed(1)}` };
+            } else if(stateObject.ascpetRatio != 1 && stateObject.ascpetRatio != .5) {
+                arButton.value = { name: `1 / ${stateObject.ascpetRatio.toFixed(1)}` };
             }
         }
 
@@ -52,7 +75,7 @@ export class EmoteEditor extends HTMLElement {
                 <div class="toolbar-row">
                     <span>Scale:</span>
                     <button class="tool-button holo" id="scale" title="Scale" @click=${e => this.setScale(1)}>
-                        ${this.scale.toFixed(1)}
+                        ${stateObject.scale.toFixed(1)}
                     </button>
                     <span>Ascpet Ratio:</span>
                     <dropdown-button class="tool-button holo" 
@@ -69,7 +92,7 @@ export class EmoteEditor extends HTMLElement {
                     <gyro-fluid-input class="holo" min="-180" max="180" value="0" @change="${function(e) {
                         self.setRotation(this.value);
                     }}"></gyro-fluid-input>
-                    <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => this.flipCanvas()}>Flip</button>
+                    <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => stateObject.flipCanvas()}>Flip</button>
 				</div>
                 <div class="toolbar-row">
                     <gyro-input placeholder="Untitled Emote" value="${this.getFileName() || ''}" @input="${function(e) {
@@ -137,7 +160,7 @@ export class EmoteEditor extends HTMLElement {
 
         for(let handle of this.handles) {
             let start = [0, 0];
-            let startCrop = [...this.crop];
+            let startCrop = [...stateObject.crop];
 
             handle.onmousedown = e => {
                 if(!e.button == 0) return;
@@ -146,8 +169,8 @@ export class EmoteEditor extends HTMLElement {
 
                 this.onmousemove = e => {
                     let delta = [
-                        (e.x / this.scale) - (start[0] / this.scale), 
-                        (e.y / this.scale) - (start[1] / this.scale)
+                        (e.x / stateObject.scale) - (start[0] / stateObject.scale), 
+                        (e.y / stateObject.scale) - (start[1] / stateObject.scale)
                     ];
 
                     if(e.shiftKey) {
@@ -159,9 +182,9 @@ export class EmoteEditor extends HTMLElement {
                     }
 
                     if(e.ctrlKey) {
-                        this.fixedRatio = false;
+                        stateObject.fixedRatio = false;
                     } else {
-                        this.fixedRatio = true;
+                        stateObject.fixedRatio = true;
                     }
 
                     if(handle.id == "handleTL") {
@@ -214,13 +237,13 @@ export class EmoteEditor extends HTMLElement {
             }
             this.onmouseup = e => {
                 this.onmousemove = null;
-                this.fixedRatio = true;
+                stateObject.fixedRatio = true;
             }
         }
     }
 
     loadImage(image, name) {
-        this.source = image;
+        stateObject.source = image;
         this.name = name;
 
         this.setResolution(image.width, image.height);
@@ -245,37 +268,37 @@ export class EmoteEditor extends HTMLElement {
     }
 
     setCrop(x, y, width, height) {
-        const prevCrop = [...this.crop];
+        const prevCrop = [...stateObject.crop];
 
-        this.crop[0] = x != null ? x : prevCrop[0];
-        this.crop[1] = y != null ? y : prevCrop[1];
-        this.crop[2] = width != null ? width : prevCrop[2];
-        this.crop[3] = height != null ? height : prevCrop[3];
+        stateObject.crop[0] = x != null ? x : prevCrop[0];
+        stateObject.crop[1] = y != null ? y : prevCrop[1];
+        stateObject.crop[2] = width != null ? width : prevCrop[2];
+        stateObject.crop[3] = height != null ? height : prevCrop[3];
 
-        this.crop[2] = Math.max(this.crop[2], this.minResolution[0]);
-        this.crop[3] = Math.max(this.crop[3], this.minResolution[1]);
+        stateObject.crop[2] = Math.max(stateObject.crop[2], stateObject.minResolution[0]);
+        stateObject.crop[3] = Math.max(stateObject.crop[3], stateObject.minResolution[1]);
 
-        if(this.fixedRatio && this.ascpetRatio !== 0) {
-            const croppedAr = this.crop[2] / this.crop[3];
+        if(stateObject.fixedRatio && stateObject.ascpetRatio !== 0) {
+            const croppedAr = stateObject.crop[2] / stateObject.crop[3];
 
-            const preArHeight = this.crop[3];
-            const preArWidth = this.crop[2];
+            const preArHeight = stateObject.crop[3];
+            const preArWidth = stateObject.crop[2];
             
-            this.crop[2] = this.crop[2];
-            this.crop[3] = this.crop[3] * (croppedAr * this.ascpetRatio);
+            stateObject.crop[2] = stateObject.crop[2];
+            stateObject.crop[3] = stateObject.crop[3] * (croppedAr * stateObject.ascpetRatio);
 
-            if(this.crop[1] != prevCrop[1]) {
-                this.crop[1] += preArHeight - this.crop[3];
+            if(stateObject.crop[1] != prevCrop[1]) {
+                stateObject.crop[1] += preArHeight - stateObject.crop[3];
             }
-            if(this.crop[0] != prevCrop[0]) {
-                this.crop[0] += preArWidth - this.crop[2];
+            if(stateObject.crop[0] != prevCrop[0]) {
+                stateObject.crop[0] += preArWidth - stateObject.crop[2];
             }
         }
 
-        this.crop = this.crop.map(v => Math.floor(v));
+        stateObject.crop = stateObject.crop.map(v => Math.floor(v));
 
-        if(!this.fixedRatio) {
-            this.ascpetRatio = height / width;
+        if(!stateObject.fixedRatio) {
+            stateObject.ascpetRatio = height / width;
         }
 
         this.render();
@@ -284,35 +307,35 @@ export class EmoteEditor extends HTMLElement {
     }
 
     setScale(scale) {
-        this.scale = Math.max(scale, 0.1);
-        this.style.setProperty('--s', this.scale);
+        stateObject.scale = Math.max(scale, 0.1);
+        this.style.setProperty('--s', stateObject.scale);
         this.render();
     }
 
     setRotation(deg) {
-        this.rotation = deg;
-        this.style.setProperty('--r', this.rotation);
+        stateObject.rotation = deg;
+        this.style.setProperty('--r', stateObject.rotation);
         this.render();
 
         this.dispatchEvent(new Event('change'));
     }
 
     setResolution(width, height) {
-        this.width = width;
-        this.height = height;
+        stateObject.width = width;
+        stateObject.height = height;
         this.canvas.width = width;
         this.canvas.height = height;
 
-        this.setCrop(0, 0, this.width, this.height);
+        this.setCrop(0, 0, stateObject.width, stateObject.height);
     }
 
     setAscpetRatio(ar) {
-        this.ascpetRatio = ar;
-        this.setCrop(0, 0, this.width, this.height);
+        stateObject.ascpetRatio = ar;
+        this.setCrop(0, 0, stateObject.width, stateObject.height);
     }
 
     flipCanvas() {
-        this.flip = !this.flip;
+        stateObject.flip = !stateObject.flip;
 
         this.draw();
         
@@ -322,18 +345,18 @@ export class EmoteEditor extends HTMLElement {
     constructor() {
         super();
 
-        this.source = null;
+        stateObject.source = null;
 
-        this.flip = false;
-        this.fixedRatio = true;
-        this.ascpetRatio = 1.0;
-        this.minResolution = [18, 18];
-        this.origin = { x: 0, y: 0 };
-        this.crop = [0, 0, 0, 0];
-        this.width = 0;
-        this.height = 0;
-        this.scale = 1;
-        this.rotation = 0;
+        stateObject.flip = false;
+        stateObject.fixedRatio = true;
+        stateObject.ascpetRatio = 1.0;
+        stateObject.minResolution = [18, 18];
+        stateObject.origin = { x: 0, y: 0 };
+        stateObject.crop = [0, 0, 0, 0];
+        stateObject.width = 0;
+        stateObject.height = 0;
+        stateObject.scale = 1;
+        stateObject.rotation = 0;
 
         this.setAttribute('empty', '');
 
@@ -344,7 +367,7 @@ export class EmoteEditor extends HTMLElement {
         this.context = this.canvas.getContext("2d");
 
         this.addEventListener('wheel', e => {
-            this.setScale(this.scale + (Math.sign(-e.deltaY) * 0.075));
+            this.setScale(stateObject.scale + (Math.sign(-e.deltaY) * 0.075));
         })
 
         this.addEventListener('mousedown', e => {
@@ -360,26 +383,26 @@ export class EmoteEditor extends HTMLElement {
 
         const mouseDrag = e => {
             if(e.buttons == 4) {
-                this.origin.x += e.movementX / this.scale;
-                this.origin.y += e.movementY / this.scale;
+                stateObject.origin.x += e.movementX / stateObject.scale;
+                stateObject.origin.y += e.movementY / stateObject.scale;
 
-                this.style.setProperty('--x', this.origin.x + 'px');
-                this.style.setProperty('--y', this.origin.y + 'px');
+                this.style.setProperty('--x', stateObject.origin.x + 'px');
+                this.style.setProperty('--y', stateObject.origin.y + 'px');
             }
         };
     }
 
     draw() {
-        if(this.source) {
-            this.context.clearRect(0, 0, this.width, this.height);
+        if(stateObject.source) {
+            this.context.clearRect(0, 0, stateObject.width, stateObject.height);
 
             this.context.save();
 
-            if(this.flip) {
+            if(stateObject.flip) {
                 this.context.scale(-1, 1);
-                this.context.drawImage(this.source, -this.width, 0);
+                this.context.drawImage(stateObject.source, -stateObject.width, 0);
             } else {
-                this.context.drawImage(this.source, 0, 0);
+                this.context.drawImage(stateObject.source, 0, 0);
             }
 
             this.context.restore();
@@ -387,8 +410,8 @@ export class EmoteEditor extends HTMLElement {
     }
 
     getSourceAspectRatio() {
-        if(this.source) {
-            return this.source.height / this.source.width;
+        if(stateObject.source) {
+            return stateObject.source.height / stateObject.source.width;
         }
         return 1;
     }
@@ -399,16 +422,16 @@ export class EmoteEditor extends HTMLElement {
 
     renderOutput() {
         const canvas = document.createElement('canvas');
-        canvas.width = this.width;
-        canvas.height = this.height;
+        canvas.width = stateObject.width;
+        canvas.height = stateObject.height;
         const context = canvas.getContext("2d");
         context.save();
 
         // recreate transforms
-        context.scale(this.width / this.crop[2], this.height / this.crop[3]);
+        context.scale(stateObject.width / stateObject.crop[2], stateObject.height / stateObject.crop[3]);
         context.translate(canvas.width / 2, canvas.height / 2);
-        context.translate(-this.crop[0], -this.crop[1]);
-        context.rotate(this.rotation * Math.PI / 180);
+        context.translate(-stateObject.crop[0], -stateObject.crop[1]);
+        context.rotate(stateObject.rotation * Math.PI / 180);
 
         context.drawImage(this.canvas, -canvas.width / 2, -canvas.height / 2);
 

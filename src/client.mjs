@@ -8,22 +8,11 @@ import '@uncut/gyro/components/Slider.js';
 import '@uncut/gyro/components/menu-bar/Menubar';
 import '@uncut/gyro/css/gyro.css';
 import '../components/emote-editor/EmoteEditor.js';
+import '../components/chat/TwitchChat.js';
 import './actions.js';
 import { Action } from '@uncut/gyro/src/core/Actions';
 
 window.addEventListener('DOMContentLoaded', init());
-
-function updatePreviews(croppedImage) {
-    if(!croppedImage) return;
-
-    const canvases = document.querySelectorAll('.emote-preview');
-
-    for(let canvas of canvases) {
-        const context = canvas.getContext("2d");
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(croppedImage, 0, 0, canvas.width, canvas.height);
-    }
-}
 
 function enableFileDragAndDrop() {
     
@@ -47,9 +36,10 @@ async function init() {
     enableFileDragAndDrop();
 
     const editor = document.querySelector('gyro-emote-editor');
+    const chat = document.querySelector('twitch-chat');
 
     window.addEventListener('preview.update', e => {
-        updatePreviews(editor.renderOutput());
+        chat.updateEmotes(editor.renderOutput());
     });
 
     editor.addEventListener('contextmenu', e => {
@@ -57,7 +47,7 @@ async function init() {
     });
 
     editor.addEventListener('change', e => {
-        updatePreviews(editor.renderOutput());
+        chat.updateEmotes(editor.renderOutput());
     })
 
     hideLoading();
