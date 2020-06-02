@@ -81,7 +81,7 @@ export class EmoteEditor extends HTMLElement {
             <div class="placeholder">
                 <gyro-icon icon="Import"></gyro-icon>
                 <span>
-                    Darg and drop image to import.
+                    Drag and drop image to import.
                 </span>
             </div>
             
