@@ -185,10 +185,17 @@ export class EmoteEditor extends HTMLElement {
                     self.setRotation(this.value);
                 }}"></gyro-fluid-input>
 
-                <span class="headline">Background</span>
+                <span class="headline">Chroma Key</span>
 
+                <label>Threshold</label>
+                <gyro-fluid-input class="holo" min="0" max="1" value="${stateObject.chromaThreshold}" steps="0.001" @change="${function(e) {
+                    stateObject.chromaThreshold = this.value; 
+                    self.render();
+                }}"></gyro-fluid-input>
+
+                <label>Key Color</label>
                 <gyro-color-field @change="${function(e) {
-                    stateObject.background = this.color;
+                    stateObject.chromaKey = [ this.color[0] / 255, this.color[1] / 255, this.color[2] / 255 ];
                     self.render();
                 }}"></gyro-color-field>
                 
@@ -230,19 +237,12 @@ export class EmoteEditor extends HTMLElement {
                     self.render();
                 }}"></gyro-fluid-input>
 
-                <span class="headline">Chroma Key</span>
+                <span class="headline">Background</span>
 
-                <label>Key Color</label>
                 <gyro-color-field @change="${function(e) {
-                    stateObject.chromaKey = [ this.color[0] / 255, this.color[1] / 255, this.color[2] / 255 ];
+                    stateObject.background = this.color;
                     self.render();
                 }}"></gyro-color-field>
-
-                <label>Threshold</label>
-                <gyro-fluid-input class="holo" min="0" max="1" value="${stateObject.chromaThreshold}" steps="0.001" @change="${function(e) {
-                    stateObject.chromaThreshold = this.value; 
-                    self.render();
-                }}"></gyro-fluid-input>
             </div>
 
             <div class="placeholder">

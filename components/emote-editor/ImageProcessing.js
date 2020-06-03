@@ -66,7 +66,22 @@ class ImageShader extends FlatShader {
                 
                 // color
                 vec4 color = vec4(texture(imageTexture, uv));
+                
+                // chromaKey
+                if(chromaKey.r + chromaKey.g + chromaKey.b > 0.0) {
 
+                    bool fitR = color.r + chromaThreshold > chromaKey.r && color.r - chromaThreshold < chromaKey.r;
+                    bool fitG = color.g + chromaThreshold > chromaKey.g && color.g - chromaThreshold < chromaKey.g;
+                    bool fitB = color.b + chromaThreshold > chromaKey.b && color.b - chromaThreshold < chromaKey.b;
+
+                    float diff = distance(chromaKey.rgb, color.rgb);
+
+                    if(fitR && fitG && fitB) {
+                        discard;
+                    }
+                }
+
+                // whitebalance
                 color.r *= whitebalance + 1.0;
                 color.b /= whitebalance + 1.0;
 
@@ -89,20 +104,6 @@ class ImageShader extends FlatShader {
                 color.rgb = mix(vec3(dot(color.rgb, W)), color.rgb, 1.0 + saturation);
 
                 oFragColor = color;
-
-                if(chromaKey.r + chromaKey.g + chromaKey.b > 0.0) {
-
-                    bool fitR = color.r + chromaThreshold > chromaKey.r && color.r - chromaThreshold < chromaKey.r;
-                    bool fitG = color.g + chromaThreshold > chromaKey.g && color.g - chromaThreshold < chromaKey.g;
-                    bool fitB = color.b + chromaThreshold > chromaKey.b && color.b - chromaThreshold < chromaKey.b;
-
-                    float diff = distance(chromaKey.rgb, color.rgb);
-
-                    if(fitR && fitG && fitB) {
-                        discard;
-                    }
-                }
-
             }
         `;
 	}
