@@ -1,6 +1,9 @@
 import { FlatRenderer, FlatShader } from '@uncut/viewport/src/renderer/FlatRenderer.js';
 import { stateObject } from './State.js';
 
+stateObject.chromaKey = [0.1, 1.0, 0.1];
+stateObject.chromaTheshold = 0.6;
+
 let renderer = null;
 let canvas = null;
 
@@ -8,7 +11,8 @@ class ImageShader extends FlatShader {
 
     get customUniforms() {
         return {
-            time: performance.now(),
+            chromaKey: stateObject.chromaKey || [0, 1, 0],
+            chromaTheshold: stateObject.chromaTheshold || 0.0,
         }
     }
 
@@ -17,20 +21,44 @@ class ImageShader extends FlatShader {
 
 			precision mediump float;
 			
-			uniform sampler2D imageTexture;
-			uniform float time;
+            uniform sampler2D imageTexture;
+            
+            uniform float brightness;
+            
+			uniform vec3 chromaKey;
+            uniform float chromaTheshold;
 
 			in vec2 texCoords;
 
-			out vec4 oFragColor;
+            out vec4 oFragColor;
 
             void main () {
 				vec2 uv = vec2(
 					texCoords.x,
 					-texCoords.y
-				);
+                );
+                
+                vec4 color = vec4(texture(imageTexture, uv));
 
-                oFragColor = vec4(texture(imageTexture, uv));
+                color.rgb += brightness;
+
+                oFragColor = color;
+
+                if(chromaKey.r + chromaKey.g + chromaKey.b > 0.0) {
+
+                    bool fitR = color.r + chromaTheshold > chromaKey.r && color.r - chromaTheshold < chromaKey.r;
+                    bool fitG = color.g + chromaTheshold > chromaKey.g && color.g - chromaTheshold < chromaKey.g;
+                    bool fitB = color.b + chromaTheshold > chromaKey.b && color.b - chromaTheshold < chromaKey.b;
+
+                    float diff = distance(chromaKey.rgb, color.rgb);
+
+                    if(fitR && fitG && fitB) {
+                        discard;
+                    } else if(diff < 0.5) {
+                        oFragColor.a = diff;
+                    }
+                }
+
             }
         `;
 	}
