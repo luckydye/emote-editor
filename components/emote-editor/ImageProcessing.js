@@ -1,8 +1,8 @@
 import { FlatRenderer, FlatShader } from '@uncut/viewport/src/renderer/FlatRenderer.js';
 import { stateObject } from './State.js';
 
-stateObject.chromaKey = [0.1, 1.0, 0.1];
-stateObject.chromaThreshold = 0.6;
+stateObject.chromaKey = [0.0, 0.0, 0.0];
+stateObject.chromaThreshold = 0.5;
 
 let renderer = null;
 let canvas = null;

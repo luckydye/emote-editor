@@ -9,6 +9,87 @@ import { html, render } from 'lit-html';
 import style from './EmoteEditor.shadow.css';
 import { preprocess } from './ImageProcessing.js';
 import { loadStateFromLocal, pushStateHistory, redo, setState, stateObject, undo } from './State.js';
+import '@uncut/gyro/components/THColorPicker.js';
+
+class ColorField extends HTMLElement {
+
+    renderTemplate() {
+        const self = this;
+
+        self.color = self.color;
+        self.colorHex = self.colorHex || '#000000';
+
+        return html`
+            <style>
+                :host {
+                    width: 100%;
+                    display: block;
+                    position: relative;
+                    outline: none;
+
+                    --color: ${self.colorHex};
+                }
+
+                :host(:focus-within) gyro-color-picker {
+                    display: block;
+                }
+
+                .field {
+                    width: 100%;
+                    height: 25px;
+                    border-radius: 6px;
+                    background: var(--color, #000000);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 5px;
+                    cursor: pointer;
+                }
+
+                .field::after {
+                    content: attr(color);
+                }
+
+                gyro-color-picker {
+                    position: relative;
+                    z-index: 10000;
+                    width: 100%;
+                    box-sizing: border-box;
+                    padding: 6px;
+                    display: none;
+                    outline: none;
+                }
+                
+            </style>
+
+            <div class="field" color="${self.colorHex}"></div>
+            
+            <gyro-color-picker tabindex="0" @input="${function(e) {
+                self.color = this.rgba;
+                self.colorHex = this.hex;
+                self.render();
+
+                self.dispatchEvent(new Event('change'));
+            }}"></gyro-color-picker>
+		`;
+    }
+
+    render() {
+        render(this.renderTemplate(), this.shadowRoot);
+    }
+
+    constructor() {
+        super();
+
+        this.tabIndex = 0;
+
+        this.attachShadow({ mode: "open" });
+        this.render();
+    }
+}
+
+customElements.define("gyro-color-field", ColorField);
+
 
 export class EmoteEditor extends HTMLElement {
 
@@ -96,6 +177,14 @@ export class EmoteEditor extends HTMLElement {
             </div>
 
             <div class="settings">
+
+                <span class="headline">Background</span>
+
+                <gyro-color-field @change="${function(e) {
+                    stateObject.background = this.color;
+                    self.render();
+                }}"></gyro-color-field>
+
                 <span class="headline">Transform</span>
 
                 <label>Rotation</label>
@@ -103,7 +192,19 @@ export class EmoteEditor extends HTMLElement {
                     self.setRotation(this.value);
                 }}"></gyro-fluid-input>
 
-                <span class="headline">Background</span>
+                <span class="headline">Chroma Key</span>
+
+                <label>Key Color</label>
+                <gyro-color-field @change="${function(e) {
+                    stateObject.chromaKey = [ this.color[0] / 255, this.color[1] / 255, this.color[2] / 255 ];
+                    self.render();
+                }}"></gyro-color-field>
+
+                <label>Threshold</label>
+                <gyro-fluid-input class="holo" min="0" max="1" value="${stateObject.chromaThreshold}" steps="0.001" @change="${function(e) {
+                    stateObject.chromaThreshold = this.value; 
+                    self.render();
+                }}"></gyro-fluid-input>
                 
                 <span class="headline">Color Correction</span>
 
@@ -130,15 +231,6 @@ export class EmoteEditor extends HTMLElement {
                 <label>Whites</label>
                 <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
                                   @change="${function(e) {}}"></gyro-fluid-input>
-
-                <span class="headline">Chroma Key</span>
-
-                <label>Threshold</label>
-                <gyro-fluid-input class="holo" min="0" max="1" value="${stateObject.chromaThreshold}" steps="0.001" @change="${function(e) {
-                    stateObject.chromaThreshold = this.value; 
-                    self.render();
-                    self.dispatchEvent(new Event('change'));
-                }}"></gyro-fluid-input>
             </div>
 
             <div class="placeholder">
@@ -288,6 +380,8 @@ export class EmoteEditor extends HTMLElement {
                 stateObject.fixedRatio = true;
             }
         }
+
+        this.dispatchEvent(new Event('change'));
     }
 
     loadImage(image, name) {
@@ -468,6 +562,12 @@ export class EmoteEditor extends HTMLElement {
             const image = preprocess(imageSource);
 
             this.context.clearRect(0, 0, stateObject.width, stateObject.height);
+
+            if(stateObject.background && stateObject.background[3] > 0) {
+                const c = stateObject.background;
+                this.context.fillStyle = `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${c[3]})`;
+                this.context.fillRect(0, 0, stateObject.width, stateObject.height);
+            }
 
             this.context.save();
 

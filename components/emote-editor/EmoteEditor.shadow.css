@@ -131,7 +131,7 @@ gyro-input {
     width: 220px;
     box-sizing: border-box;
     z-index: 1000;
-    max-height: calc(100% - 100px);
+    max-height: calc(100% - 70px);
     overflow: auto;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
 }
