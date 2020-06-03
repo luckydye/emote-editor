@@ -72,7 +72,7 @@ notifications {
     position: fixed;
     z-index: 1000;
     left: 60px;
-    bottom: 10px;
+    bottom: 5px;
 }
 
 @keyframes slide-in-up {

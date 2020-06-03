@@ -2,12 +2,13 @@ import componentStyles from '@uncut/gyro/components/component.shadow.css';
 import '@uncut/gyro/components/DropdownButton.js';
 import '@uncut/gyro/components/FluidInput.js';
 import '@uncut/gyro/components/Input.js';
+import '@uncut/gyro/components/Slider.js';
 import Notification from '@uncut/gyro/components/Notification';
 import '@uncut/gyro/components/settings/Settings.js';
 import { html, render } from 'lit-html';
 import style from './EmoteEditor.shadow.css';
 import { preprocess } from './ImageProcessing.js';
-import { loadStateFromLocal, setState, stateObject, redo, undo, pushStateHistory } from './State.js';
+import { loadStateFromLocal, pushStateHistory, redo, setState, stateObject, undo } from './State.js';
 
 export class EmoteEditor extends HTMLElement {
 
@@ -85,10 +86,6 @@ export class EmoteEditor extends HTMLElement {
                                         }
                                     }}">
                     </dropdown-button>
-                    <span>Rotation:</span>
-                    <gyro-fluid-input class="holo" min="-180" max="180" value="0" @change="${function(e) {
-                        self.setRotation(this.value);
-                    }}"></gyro-fluid-input>
                     <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => self.flipCanvas()}>Flip</button>
 				</div>
                 <div class="toolbar-row">
@@ -96,6 +93,52 @@ export class EmoteEditor extends HTMLElement {
                         self.name = this.value;
                     }}"></gyro-input>
 				</div>
+            </div>
+
+            <div class="settings">
+                <span class="headline">Transform</span>
+
+                <label>Rotation</label>
+                <gyro-fluid-input class="holo" min="-180" max="180" value="${stateObject.rotation}" @change="${function(e) {
+                    self.setRotation(this.value);
+                }}"></gyro-fluid-input>
+
+                <span class="headline">Background</span>
+                
+                <span class="headline">Color Correction</span>
+
+                <label>Whitebalance</label>
+                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
+                                  @change="${function(e) {}}"></gyro-fluid-input>
+
+                <label>Brightness</label>
+                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
+                                  @change="${function(e) {}}"></gyro-fluid-input>
+
+                <label>Contrast</label>
+                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
+                                  @change="${function(e) {}}"></gyro-fluid-input>
+
+                <label>Saturation</label>
+                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
+                                  @change="${function(e) {}}"></gyro-fluid-input>
+
+                <label>Blacks</label>
+                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
+                                  @change="${function(e) {}}"></gyro-fluid-input>
+
+                <label>Whites</label>
+                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
+                                  @change="${function(e) {}}"></gyro-fluid-input>
+
+                <span class="headline">Chroma Key</span>
+
+                <label>Threshold</label>
+                <gyro-fluid-input class="holo" min="0" max="1" value="${stateObject.chromaThreshold}" steps="0.001" @change="${function(e) {
+                    stateObject.chromaThreshold = this.value; 
+                    self.render();
+                    self.dispatchEvent(new Event('change'));
+                }}"></gyro-fluid-input>
             </div>
 
             <div class="placeholder">
@@ -108,7 +151,10 @@ export class EmoteEditor extends HTMLElement {
             <svg class="preview" 
                 width="${this.clientWidth}" 
                 height="${this.clientHeight}" 
-                viewbox="${`0 0 ${this.clientWidth} ${this.clientHeight}`}">
+                viewbox="${`0 0 ${this.clientWidth} ${this.clientHeight}`}" 
+                @wheel="${e => {
+                    this.setScale(stateObject.scale + (Math.sign(-e.deltaY) * 0.075));
+                }}">
 
                 <g id="origin">
                     <g id="view">
@@ -366,10 +412,6 @@ export class EmoteEditor extends HTMLElement {
         this.canvas = document.createElement("canvas");
         this.context = this.canvas.getContext("2d");
 
-        this.addEventListener('wheel', e => {
-            this.setScale(stateObject.scale + (Math.sign(-e.deltaY) * 0.075));
-        })
-
         this.addEventListener('mousedown', e => {
             this.addEventListener('mousemove', mouseDrag);
         })
@@ -405,6 +447,8 @@ export class EmoteEditor extends HTMLElement {
                     this.loadImage(state.source);
                     setState(state);
                     this.render();
+                    
+                    this.dispatchEvent(new Event('change'));
                 }
             }).show();
         }

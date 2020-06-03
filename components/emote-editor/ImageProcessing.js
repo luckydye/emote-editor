@@ -2,7 +2,7 @@ import { FlatRenderer, FlatShader } from '@uncut/viewport/src/renderer/FlatRende
 import { stateObject } from './State.js';
 
 stateObject.chromaKey = [0.1, 1.0, 0.1];
-stateObject.chromaTheshold = 0.6;
+stateObject.chromaThreshold = 0.6;
 
 let renderer = null;
 let canvas = null;
@@ -12,7 +12,7 @@ class ImageShader extends FlatShader {
     get customUniforms() {
         return {
             chromaKey: stateObject.chromaKey || [0, 1, 0],
-            chromaTheshold: stateObject.chromaTheshold || 0.0,
+            chromaThreshold: stateObject.chromaThreshold || 0.0,
         }
     }
 
@@ -26,7 +26,7 @@ class ImageShader extends FlatShader {
             uniform float brightness;
             
 			uniform vec3 chromaKey;
-            uniform float chromaTheshold;
+            uniform float chromaThreshold;
 
 			in vec2 texCoords;
 
@@ -46,9 +46,9 @@ class ImageShader extends FlatShader {
 
                 if(chromaKey.r + chromaKey.g + chromaKey.b > 0.0) {
 
-                    bool fitR = color.r + chromaTheshold > chromaKey.r && color.r - chromaTheshold < chromaKey.r;
-                    bool fitG = color.g + chromaTheshold > chromaKey.g && color.g - chromaTheshold < chromaKey.g;
-                    bool fitB = color.b + chromaTheshold > chromaKey.b && color.b - chromaTheshold < chromaKey.b;
+                    bool fitR = color.r + chromaThreshold > chromaKey.r && color.r - chromaThreshold < chromaKey.r;
+                    bool fitG = color.g + chromaThreshold > chromaKey.g && color.g - chromaThreshold < chromaKey.g;
+                    bool fitB = color.b + chromaThreshold > chromaKey.b && color.b - chromaThreshold < chromaKey.b;
 
                     float diff = distance(chromaKey.rgb, color.rgb);
 
