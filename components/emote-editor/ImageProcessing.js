@@ -54,8 +54,6 @@ class ImageShader extends FlatShader {
 
                     if(fitR && fitG && fitB) {
                         discard;
-                    } else if(diff < 0.5) {
-                        oFragColor.a = diff;
                     }
                 }
 

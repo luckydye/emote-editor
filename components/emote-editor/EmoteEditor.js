@@ -178,19 +178,19 @@ export class EmoteEditor extends HTMLElement {
 
             <div class="settings">
 
-                <span class="headline">Background</span>
-
-                <gyro-color-field @change="${function(e) {
-                    stateObject.background = this.color;
-                    self.render();
-                }}"></gyro-color-field>
-
                 <span class="headline">Transform</span>
 
                 <label>Rotation</label>
                 <gyro-fluid-input class="holo" min="-180" max="180" value="${stateObject.rotation}" @change="${function(e) {
                     self.setRotation(this.value);
                 }}"></gyro-fluid-input>
+
+                <span class="headline">Background</span>
+
+                <gyro-color-field @change="${function(e) {
+                    stateObject.background = this.color;
+                    self.render();
+                }}"></gyro-color-field>
 
                 <span class="headline">Chroma Key</span>
 
@@ -205,32 +205,6 @@ export class EmoteEditor extends HTMLElement {
                     stateObject.chromaThreshold = this.value; 
                     self.render();
                 }}"></gyro-fluid-input>
-                
-                <span class="headline">Color Correction</span>
-
-                <label>Whitebalance</label>
-                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
-                                  @change="${function(e) {}}"></gyro-fluid-input>
-
-                <label>Brightness</label>
-                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
-                                  @change="${function(e) {}}"></gyro-fluid-input>
-
-                <label>Contrast</label>
-                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
-                                  @change="${function(e) {}}"></gyro-fluid-input>
-
-                <label>Saturation</label>
-                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
-                                  @change="${function(e) {}}"></gyro-fluid-input>
-
-                <label>Blacks</label>
-                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
-                                  @change="${function(e) {}}"></gyro-fluid-input>
-
-                <label>Whites</label>
-                <gyro-fluid-input class="holo" min="-1" max="1" value="0" 
-                                  @change="${function(e) {}}"></gyro-fluid-input>
             </div>
 
             <div class="placeholder">

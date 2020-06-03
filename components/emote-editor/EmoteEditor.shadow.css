@@ -158,12 +158,11 @@ gyro-input {
 }
 
 .settings label {
-    margin: 10px 0;
+    margin: 10px 0 5px 0;
     display: block;
 }
 
-.settings gyro-fluid-input,
-.settings gyro-slider {
+.settings gyro-fluid-input {
     width: 100%;
     height: 24px;
 }
