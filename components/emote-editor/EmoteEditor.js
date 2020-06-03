@@ -191,6 +191,44 @@ export class EmoteEditor extends HTMLElement {
                     stateObject.background = this.color;
                     self.render();
                 }}"></gyro-color-field>
+                
+                <span class="headline">Color Correction</span>
+
+                <label>White Balance</label>
+                <gyro-fluid-input class="holo" min="-0.5" max="0.5" value="${stateObject.whitebalance}" steps="0.001" @change="${function(e) {
+                    stateObject.whitebalance = this.value; 
+                    self.render();
+                }}"></gyro-fluid-input>
+
+                <label>Brightness</label>
+                <gyro-fluid-input class="holo" min="-1" max="1" steps="0.01" value="${stateObject.brightness}" steps="0.001" @change="${function(e) {
+                    stateObject.brightness = this.value; 
+                    self.render();
+                }}"></gyro-fluid-input>
+
+                <label>Contrast</label>
+                <gyro-fluid-input class="holo" min="0" max="5" value="1" value="${stateObject.contrast}" steps="0.001" @change="${function(e) {
+                    stateObject.contrast = this.value; 
+                    self.render();
+                }}"></gyro-fluid-input>
+
+                <label>Saturation</label>
+                <gyro-fluid-input class="holo" min="-1" max="1" value="${stateObject.saturation}" steps="0.001" @change="${function(e) {
+                    stateObject.saturation = this.value; 
+                    self.render();
+                }}"></gyro-fluid-input>
+
+                <label>Blacks</label>
+                <gyro-fluid-input class="holo" min="-1" max="2" value="${stateObject.blacks}" steps="0.001" @change="${function(e) {
+                    stateObject.blacks = this.value; 
+                    self.render();
+                }}"></gyro-fluid-input>
+
+                <label>Whites</label>
+                <gyro-fluid-input class="holo" min="-1" max="2" value="${stateObject.whites}" steps="0.001" @change="${function(e) {
+                    stateObject.whites = this.value; 
+                    self.render();
+                }}"></gyro-fluid-input>
 
                 <span class="headline">Chroma Key</span>
 
@@ -210,7 +248,7 @@ export class EmoteEditor extends HTMLElement {
             <div class="placeholder">
                 <gyro-icon icon="Import"></gyro-icon>
                 <span>
-                    Drag and drop or Ctrl+V image to import.
+                    Drag and drop or paste image to import.
                 </span>
             </div>
             
