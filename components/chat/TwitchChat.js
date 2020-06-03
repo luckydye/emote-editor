@@ -1,5 +1,6 @@
 import chatStyles from './chat.shadow.css';
 import { html, render } from 'lit-html';
+import './SettingsTab.js';
 
 const placeholderEmote = new Image();
 placeholderEmote.src = "https://static-cdn.jtvnw.net/emoticons/v1/1/5.0";
@@ -60,7 +61,7 @@ export class TwitchChat extends HTMLElement {
                         </span>
                     </div>
                 </div>
-                <div class="emote-preview-container">
+                <div class="emote-preview-container" ?hidden="${!this.showPreview}">
                     <h2>Emotes</h2>
                     <div class="image-preview">
                         <canvas pewview class="emote-preview" width="112" height="112"></canvas>
@@ -68,7 +69,7 @@ export class TwitchChat extends HTMLElement {
                         <canvas pewview class="emote-preview" width="28" height="28"></canvas>
                     </div>
                 </div>
-                <div class="emote-preview-container">
+                <div class="emote-preview-container" ?hidden="${!this.showPreview}">
                     <h2>Badges</h2>
                     <div class="image-preview">
                         <canvas pewview class="emote-preview" width="72" height="72"></canvas>
@@ -76,7 +77,7 @@ export class TwitchChat extends HTMLElement {
                         <canvas pewview class="emote-preview" width="18" height="18"></canvas>
                     </div>
                 </div>
-                <div class="channel-rewards">
+                <div class="channel-rewards" ?hidden="${!this.showRewards}">
                     <div class="title">Channel Rewards</div>
                     <div class="rewards">
                         <div class="reward">
@@ -105,8 +106,27 @@ export class TwitchChat extends HTMLElement {
 		`;
     }
 
+    get showPreview() {
+        return this._showPreview;
+    }
+    set showPreview(val) {
+        this._showPreview = val;
+        this.render();
+    }
+
+    get showRewards() {
+        return this._showRewards;
+    }
+    set showRewards(val) {
+        this._showRewards = val;
+        this.render();
+    }
+
     constructor() {
         super();
+
+        this._showPreview = true;
+        this._showRewards = true;
 
         this.attachShadow({ mode: "open" });
         this.render();
