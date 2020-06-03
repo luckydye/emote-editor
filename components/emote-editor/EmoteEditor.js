@@ -6,111 +6,25 @@ import Notification from '@uncut/gyro/components/Notification';
 import '@uncut/gyro/components/settings/Settings.js';
 import { html, render } from 'lit-html';
 import style from './EmoteEditor.shadow.css';
-
-let stateObject = {
-    source: null,
-    flip: false,
-    fixedRatio: true,
-    ascpetRatio: 1.0,
-    minResolution: [18, 18],
-    origin: { x: 0, y: 0 },
-    crop: [0, 0, 0, 0],
-    width: 0,
-    height: 0,
-    scale: 1,
-    rotation: 0,
-}
-
-const history = [];
-let future = [];
-
-function serializeState(state) {
-    const jsonState = JSON.stringify(state);
-    const json = JSON.parse(jsonState);
-
-    if(state.source) {
-        const source = state.source;
-        const sourceURL = source.src;
-        json.source = sourceURL;
-    }
-
-    return JSON.stringify(json);
-}
-
-function pushState(state, arr, keep = false) {
-
-    if(arr === history && !keep) {
-        future = [];
-    }
-
-    const serialzedState = serializeState(state);
-    arr.unshift(serialzedState);
-
-    if(arr.length > 50) {
-        arr.pop();
-    }
-
-    saveStateToLocal();
-}
-
-function revertState(newState) {
-    stateObject = JSON.parse(newState);
-
-    const img = new Image();
-    img.src = stateObject.source;
-    stateObject.source = img;
-
-    saveStateToLocal();
-}
-
-function saveStateToLocal() {
-    const serialzedState = serializeState(stateObject);
-    localStorage.setItem('save-state', serialzedState);
-}
-
-function loadStateFromLocal() {
-    let saveState = localStorage.getItem('save-state');
-
-    if(saveState) {
-        saveState = JSON.parse(saveState);
-
-        const img = new Image();
-        img.src = saveState.source;
-        saveState.source = img;
-    
-        return saveState;
-    }
-}
+import { preprocess } from './ImageProcessing.js';
+import { loadStateFromLocal, setState, stateObject, redo, undo, pushStateHistory } from './State.js';
 
 export class EmoteEditor extends HTMLElement {
 
     redo() {
-        const newState = future[0];
-
-        if(newState) {
-            future.shift();
-
-            pushState(stateObject, history, true);
-            revertState(newState);
-            this.render();
-        }
+        redo();
+        this.render();
     }
 
     undo() {
-        const oldState = history[0];
-
-        if(oldState) {
-            history.shift();
-            
-            pushState(stateObject, future);
-            revertState(oldState);
-            this.render();
-        }
+        undo();
+        this.render();
     }
 
     get width() {
         return stateObject.width;
     }
+
     get height() {
         return stateObject.height;
     }
@@ -489,7 +403,7 @@ export class EmoteEditor extends HTMLElement {
                 time: 1000 * 5,
                 onclick: () => {
                     this.loadImage(state.source);
-                    stateObject = state;
+                    setState(state);
                     this.render();
                 }
             }).show();
@@ -497,22 +411,27 @@ export class EmoteEditor extends HTMLElement {
         
         this.addEventListener('mousedown', () => {
             if(stateObject.source) {
-                pushState(stateObject, history);
+                pushStateHistory();
             }
         });
     }
 
     draw() {
-        if(stateObject.source) {
+        const imageSource = stateObject.source;
+
+        if(imageSource) {
+
+            const image = preprocess(imageSource);
+
             this.context.clearRect(0, 0, stateObject.width, stateObject.height);
 
             this.context.save();
 
             if(stateObject.flip) {
                 this.context.scale(-1, 1);
-                this.context.drawImage(stateObject.source, -stateObject.width, 0);
+                this.context.drawImage(image, -stateObject.width, 0);
             } else {
-                this.context.drawImage(stateObject.source, 0, 0);
+                this.context.drawImage(image, 0, 0);
             }
 
             this.context.restore();
@@ -531,6 +450,8 @@ export class EmoteEditor extends HTMLElement {
     }
 
     renderOutput() {
+        const imageSource = this.canvas;
+        
         const canvas = document.createElement('canvas');
         canvas.width = stateObject.width;
         canvas.height = stateObject.height;
@@ -543,7 +464,7 @@ export class EmoteEditor extends HTMLElement {
         context.translate(-stateObject.crop[0], -stateObject.crop[1]);
         context.rotate(stateObject.rotation * Math.PI / 180);
 
-        context.drawImage(this.canvas, -canvas.width / 2, -canvas.height / 2);
+        context.drawImage(imageSource, -canvas.width / 2, -canvas.height / 2);
 
         context.restore();
         return canvas;
