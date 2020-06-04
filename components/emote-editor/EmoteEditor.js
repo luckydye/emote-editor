@@ -170,7 +170,7 @@ export class EmoteEditor extends HTMLElement {
                     <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => self.flipCanvas()}>Flip</button>
 				</div>
                 <div class="toolbar-row">
-                    <gyro-input placeholder="Untitled Emote" value="${this.getFileName() || ''}" @input="${function(e) {
+                    <gyro-input placeholder="Untitled" value="${this.getFileName() || ''}" @input="${function(e) {
                         self.name = this.value;
                     }}"></gyro-input>
 				</div>

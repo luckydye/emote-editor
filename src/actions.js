@@ -236,3 +236,19 @@ Action.register({
         editor.redo()
     }
 });
+
+// publish
+
+Action.register({
+    name: 'publish.ffz',
+    onAction: () => {
+        window.open('https://www.frankerfacez.com/emoticons/submit');
+    }
+});
+
+Action.register({
+    name: 'publish.bttv',
+    onAction: () => {
+        window.open('https://betterttv.com/dashboard/emotes/upload');
+    }
+});

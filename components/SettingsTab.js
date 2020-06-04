@@ -17,10 +17,18 @@ const index = SettingsComponent.createTab({
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    width: 360px;
+                    width: 500px;
                     margin-bottom: 15px;
                     padding-bottom: 15px;
                     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                }
+
+                .row.header {
+                    padding: 8px 0;
+                    margin: 0 0 20px 0;
+                    border-radius: 4px;
+                    border: none;
+                    opacity: 0.5;
                 }
 
                 input-switch {
@@ -28,6 +36,8 @@ const index = SettingsComponent.createTab({
                 }
 
             </style>
+
+            <div class="row header">Appearance</div>
 
             <div class="row">
                 <label>Show emote preview</label>
@@ -41,6 +51,9 @@ const index = SettingsComponent.createTab({
                     chat.showRewards = this.checked;
                 }}"></input-switch>
             </div>
+
+            <div class="row header">Rendering</div>
+
             <div class="row">
                 <label>Smooth rendering</label>
                 <input-switch ?checked="${Config.global.getValue('rendering.smooth')}" @change="${function(e) {
