@@ -4,7 +4,7 @@ import Notification from '@uncut/gyro/components/Notification.js';
 import Config from '@uncut/gyro/src/core/Config.js';
 
 // config
-Config.global.define('rendering.smooth', true, true);
+Config.global.define('rendering.smooth', false, false);
 Config.global.load();
 
 // app functions
