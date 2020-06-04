@@ -13,8 +13,6 @@ function resizeImage(imageObject, size) {
     canvas.width = size;
     canvas.height = size;
 
-    document.body.appendChild(canvas);
-
     const context = canvas.getContext("2d");
 
     if(!Config.global.getValue('rendering.smooth')) {
