@@ -12,6 +12,7 @@ import '../components/chat/TwitchChat.js';
 import '../components/SettingsTab.js';
 import './actions.js';
 import { Action } from '@uncut/gyro/src/core/Actions';
+import Notification from '@uncut/gyro/components/Notification';
 
 window.addEventListener('load', () => {
     init().catch(err => {
@@ -32,6 +33,21 @@ async function init() {
                 if (item.kind === 'file') {
                     const file = item.getAsFile();
                     Action.execute('import.image', [file]);
+
+                } else if(item.type === 'text/uri-list') {
+                    item.getAsString(async string => {
+                        const blob = await fetch(string).then(r => r.blob()).catch(err => {
+                            console.error(err);
+                        });
+                        
+                        if(blob && blob.size > 0) {
+                            blob.name = "untitled";
+                            Action.execute('import.image', [blob]);
+                        } else {
+                            new Notification({ text: 'Failed loading image.' }).show();
+                        }
+                    });
+
                 }
             }
         }

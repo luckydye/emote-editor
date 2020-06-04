@@ -69,17 +69,21 @@ function importImage() {
 function readFile(file) {
     const reader  = new FileReader();
     reader.onload = function(e)  {
-        const img = new Image();
-        img.src = e.target.result;
-
-        img.onload = () => {
-            const editor = document.querySelector('gyro-emote-editor');
-            editor.loadImage(img, file.name.split(".")[0]);
-
-            window.dispatchEvent(new Event('preview.update'));
-        }
+        createImage(e.target.result, file.name.split(".")[0]);
     }
     reader.readAsDataURL(file);
+}
+
+function createImage(url, name = "untitled") {
+    const img = new Image();
+    img.src = url;
+
+    img.onload = () => {
+        const editor = document.querySelector('gyro-emote-editor');
+        editor.loadImage(img, name);
+
+        window.dispatchEvent(new Event('preview.update'));
+    }
 }
 
 // export
@@ -115,9 +119,11 @@ Action.register({
     name: 'import.image',
     description: 'Import image',
     shortcut: 'Ctrl+I',
-    onAction([ file ]) {
-        if(file) {
-            readFile(file);
+    onAction([ fileOrUrl ]) {
+        if(fileOrUrl && typeof fileOrUrl == "string") {
+            createImage(fileOrUrl);
+        } else if(fileOrUrl) {
+            readFile(fileOrUrl);
         } else {
             importImage();
         }
