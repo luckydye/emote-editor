@@ -1,6 +1,6 @@
 import chatStyles from './chat.shadow.css';
 import { html, render } from 'lit-html';
-import './SettingsTab.js';
+import Config from '@uncut/gyro/src/core/Config.js';
 
 const placeholderEmote = new Image();
 placeholderEmote.src = "https://static-cdn.jtvnw.net/emoticons/v1/1/5.0";
@@ -145,6 +145,20 @@ export class TwitchChat extends HTMLElement {
 
             const context = canvas.getContext("2d");
             context.clearRect(0, 0, canvas.width, canvas.height);
+
+            if(!Config.global.getValue('rendering.smooth')) {
+                canvas.style.imageRendering = 'pixelated';
+                context.mozImageSmoothingEnabled = false;
+                context.webkitImageSmoothingEnabled = false;
+                context.msImageSmoothingEnabled = false;
+                context.imageSmoothingEnabled = false;
+            } else {
+                canvas.style.imageRendering = 'optimizequality';
+                context.mozImageSmoothingEnabled = true;
+                context.webkitImageSmoothingEnabled = true;
+                context.msImageSmoothingEnabled = true;
+                context.imageSmoothingEnabled = true;
+            }
             
             if(croppedImage && croppedImage.width > 0) {
 

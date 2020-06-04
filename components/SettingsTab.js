@@ -1,10 +1,11 @@
 import { SettingsComponent } from '@uncut/gyro/components/settings/Settings.js';
 import { html } from 'lit-html';
 import '@uncut/gyro/components/Switch.js';
+import Config from '@uncut/gyro/src/core/Config.js';
 
 const index = SettingsComponent.createTab({
-    title: "Appearance",
-    icon: "Author",
+    title: "System",
+    icon: "Preset",
     content: () => {
         const chat = document.querySelector('twitch-chat');
 
@@ -36,6 +37,15 @@ const index = SettingsComponent.createTab({
                 <label>Show rewards preview</label>
                 <input-switch ?checked="${chat.showRewards}" @change="${function(e) {
                     chat.showRewards = this.checked;
+                }}"></input-switch>
+            </div>
+            <div class="row">
+                <label>Smooth rendering</label>
+                <input-switch ?checked="${Config.global.getValue('rendering.smooth')}" @change="${function(e) {
+                    Config.global.setValue('rendering.smooth', this.checked);
+                    Config.global.save();
+                    const editor = document.querySelector('gyro-emote-editor');
+                    editor.dispatchEvent(new Event('change'));
                 }}"></input-switch>
             </div>
         `;

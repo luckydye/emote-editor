@@ -1,13 +1,38 @@
 import { Action } from '@uncut/gyro/src/core/Actions';
 import { html, render } from 'lit-html';
 import Notification from '@uncut/gyro/components/Notification.js';
+import Config from '@uncut/gyro/src/core/Config.js';
 
+// config
+Config.global.define('rendering.smooth', true, true);
+Config.global.load();
+
+// app functions
 function resizeImage(imageObject, size) {
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
+
+    document.body.appendChild(canvas);
+
     const context = canvas.getContext("2d");
+
+    if(!Config.global.getValue('rendering.smooth')) {
+        canvas.style.imageRendering = 'pixelated';
+        context.mozImageSmoothingEnabled = false;
+        context.webkitImageSmoothingEnabled = false;
+        context.msImageSmoothingEnabled = false;
+        context.imageSmoothingEnabled = false;
+    } else {
+        canvas.style.imageRendering = 'optimizequality';
+        context.mozImageSmoothingEnabled = true;
+        context.webkitImageSmoothingEnabled = true;
+        context.msImageSmoothingEnabled = true;
+        context.imageSmoothingEnabled = true;
+    }
+
     context.drawImage(imageObject, 0, 0, canvas.width, canvas.height);
+    
     return canvas;
 }
 

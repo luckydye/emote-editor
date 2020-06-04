@@ -9,6 +9,7 @@ import '@uncut/gyro/components/menu-bar/Menubar';
 import '@uncut/gyro/css/gyro.css';
 import '../components/emote-editor/EmoteEditor.js';
 import '../components/chat/TwitchChat.js';
+import '../components/SettingsTab.js';
 import './actions.js';
 import { Action } from '@uncut/gyro/src/core/Actions';
 
