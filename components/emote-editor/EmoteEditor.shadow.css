@@ -65,6 +65,7 @@ canvas {
     background: url(./images/transparency.svg);
     background-color: #282828;
     background-size: calc(20px / var(--s));
+    image-rendering: pixelated;
 }
 
 .border {
