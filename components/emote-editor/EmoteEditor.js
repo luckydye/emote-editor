@@ -10,6 +10,7 @@ import style from './EmoteEditor.shadow.css';
 import { preprocess } from './ImageProcessing.js';
 import { loadStateFromLocal, pushStateHistory, redo, setState, stateObject, undo } from './State.js';
 import '@uncut/gyro/components/THColorPicker.js';
+import '@uncut/gyro/components/Histogram.js';
 
 class ColorField extends HTMLElement {
 
@@ -163,6 +164,8 @@ export class EmoteEditor extends HTMLElement {
 				</div>
             </div>
 
+            ${this.histogram}
+
             <div class="settings">
 
                 <span class="headline">Transform</span>
@@ -300,7 +303,7 @@ export class EmoteEditor extends HTMLElement {
     render() {
         render(this.renderTemplate(), this.shadowRoot);
         this.draw();
-
+        
         this.style.setProperty('--s', stateObject.scale);
         this.style.setProperty('--r', stateObject.rotation);
         this.style.setProperty('--x', stateObject.origin.x + 'px');
@@ -423,6 +426,8 @@ export class EmoteEditor extends HTMLElement {
         this.render();
 
         this.removeAttribute('empty', '');
+
+        this.histogram.processImage(image);
     }
 
     setCrop(x, y, width, height) {
@@ -516,6 +521,8 @@ export class EmoteEditor extends HTMLElement {
 
         this.setAttribute('empty', '');
 
+        this.histogram = document.createElement('gyro-histogram');
+
         this.attachShadow({ mode: "open" });
         this.render();
 
@@ -595,6 +602,8 @@ export class EmoteEditor extends HTMLElement {
             }
 
             this.context.restore();
+
+            this.histogram.processImage(image);
         }
     }
 
