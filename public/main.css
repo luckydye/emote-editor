@@ -63,6 +63,7 @@ gyro-layout {
     height: 100%;
     padding: 2px;
     box-sizing: border-box;
+    grid-template-columns: 1fr 340px;
 }
 
 #openButton {

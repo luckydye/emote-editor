@@ -152,22 +152,9 @@ export class EmoteEditor extends HTMLElement {
 
 			<div class="toolbar">
                 <div class="toolbar-row">
-                    <span>Scale:</span>
                     <button class="tool-button holo" id="scale" title="Scale" @click=${e => this.setScale(1)}>
-                        ${stateObject.scale.toFixed(1)}
+                        ${Math.floor(stateObject.scale.toFixed(1) * 100)}%
                     </button>
-                    <span>Ascpet Ratio:</span>
-                    <dropdown-button class="tool-button holo" 
-                                    title="Aspect Ratio" 
-                                    id="arButton"
-                                    .options="${arOptions}" 
-                                    @change="${function(e) {
-                                        if(self.width > 0) {
-                                            self.setAscpetRatio(+this.value.value);
-                                        }
-                                    }}">
-                    </dropdown-button>
-                    <button class="tool-button holo" title="Flip Canvas Horizontally" @click=${e => self.flipCanvas()}>Flip</button>
 				</div>
                 <div class="toolbar-row">
                     <gyro-input placeholder="Untitled" value="${this.getFileName() || ''}" @input="${function(e) {
@@ -180,10 +167,27 @@ export class EmoteEditor extends HTMLElement {
 
                 <span class="headline">Transform</span>
 
+                <label>Aspect Ratio</label>
+                <dropdown-button class="holo" 
+                                title="Aspect Ratio" 
+                                id="arButton"
+                                .options="${arOptions}" 
+                                @change="${function(e) {
+                                    if(self.width > 0) {
+                                        self.setAscpetRatio(+this.value.value);
+                                    }
+                                }}">
+                </dropdown-button>
+                
                 <label>Rotation</label>
                 <gyro-fluid-input class="holo" min="-180" max="180" value="${stateObject.rotation}" @change="${function(e) {
                     self.setRotation(this.value);
                 }}"></gyro-fluid-input>
+                
+                <br/>
+                <br/>
+
+                <button class="holo" title="Flip Canvas Horizontally" @click=${e => self.flipCanvas()}>Flip Canvas</button>
 
                 <span class="headline">Chroma Key</span>
 
