@@ -264,7 +264,7 @@ export class EmoteEditor extends HTMLElement {
                 height="${this.clientHeight}" 
                 viewbox="${`0 0 ${this.clientWidth} ${this.clientHeight}`}" 
                 @wheel="${e => {
-                    this.setScale(stateObject.scale + (Math.sign(-e.deltaY) * 0.075));
+                    this.setScale(stateObject.scale - ((e.deltaY * stateObject.scale) * 0.001));
                 }}">
 
                 <g id="origin">

@@ -191,6 +191,6 @@ gyro-histogram {
     height: 130px;
     position: absolute;
     bottom: 10px;
-    left: 15px;
-    opacity: 0.5;
+    left: 0px;
+    opacity: 0.1;
 }
