@@ -56,9 +56,11 @@ importers:
   packages/ui:
     specifiers:
       atrium: 'workspace:'
+      lit-element: ^2.5.1
       solid-js: ^1.6.6
     dependencies:
       atrium: link:../atrium
+      lit-element: 2.5.1
       solid-js: 1.6.10
 
 packages:
