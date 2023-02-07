@@ -1,4 +1,15 @@
 node_modules
-_previews
-/.firebaserc
-/.firebase
+
+dist
+
+# turbo
+**/.turbo
+
+# rust
+**/pkg
+**/target
+
+# firebase
+.firebase
+
+.DS_Store

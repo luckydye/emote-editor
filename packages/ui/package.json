@@ -1,0 +1,7 @@
+{
+  "name": "ui",
+  "dependencies": {
+    "solid-js": "^1.6.6",
+    "atrium": "workspace:"
+  }
+}
