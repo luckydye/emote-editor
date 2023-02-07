@@ -2,11 +2,11 @@
 
 Requirements: Rust, npm
 
-Install dependencies  
-`npm ci`
+Install dependencies
+`pnpm i`
 
-Run  
-`npm run dev`
+Run
+`pnpm web dev`
 
 ## Create new rust wasm package
 
