@@ -12,7 +12,7 @@ importers:
       turbo: 1.7.0
       typescript: 5.0.0-dev.20230204
 
-  apps/web:
+  apps/emote-editor:
     specifiers:
       atrium: workspace:^
       autoprefixer: ^10.4.13
