@@ -13,6 +13,7 @@ const envVars = {
 };
 
 export default defineConfig({
+  base: "",
   publicDir: "static",
   server: {
     port: 3000,
